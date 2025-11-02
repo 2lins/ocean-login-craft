@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Gem, Compass, Crown } from "lucide-react";
 import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { MeshDistortMaterial, Sphere } from "@react-three/drei";
+import { MeshDistortMaterial, Sphere, Html } from "@react-three/drei";
 import * as THREE from "three";
 
 type TabId = "menu" | "reservas" | "ranking";
@@ -22,9 +22,11 @@ interface AnimatedSphereProps {
   position: [number, number, number];
   scale: number;
   color: string;
+  icon: typeof Gem;
+  name: string;
 }
 
-const AnimatedSphere = ({ isActive, onClick, position, scale, color }: AnimatedSphereProps) => {
+const AnimatedSphere = ({ isActive, onClick, position, scale, color, icon: Icon, name }: AnimatedSphereProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
@@ -42,26 +44,54 @@ const AnimatedSphere = ({ isActive, onClick, position, scale, color }: AnimatedS
   });
 
   return (
-    <mesh
-      ref={meshRef}
-      position={position}
-      onClick={onClick}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
-    >
-      <Sphere args={[1, 64, 64]}>
-        <MeshDistortMaterial
-          color={color}
-          attach="material"
-          distort={0.3}
-          speed={2}
-          roughness={0.2}
-          metalness={0.8}
-          emissive={color}
-          emissiveIntensity={isActive ? 0.5 : 0.2}
-        />
-      </Sphere>
-    </mesh>
+    <group position={position}>
+      <mesh
+        ref={meshRef}
+        onClick={onClick}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+      >
+        <Sphere args={[1, 64, 64]}>
+          <MeshDistortMaterial
+            color={color}
+            attach="material"
+            distort={0.3}
+            speed={2}
+            roughness={0.2}
+            metalness={0.8}
+            emissive={color}
+            emissiveIntensity={isActive ? 0.5 : 0.2}
+            transparent
+            opacity={0.7}
+          />
+        </Sphere>
+      </mesh>
+      
+      {/* Icon inside sphere */}
+      <Html center distanceFactor={6}>
+        <div 
+          className={`flex flex-col items-center gap-1 pointer-events-none transition-all duration-300 ${
+            isActive ? "text-primary" : "text-foreground"
+          }`}
+          style={{
+            filter: `drop-shadow(0 0 ${isActive ? '12px' : '6px'} rgba(239, 169, 74, ${isActive ? '0.8' : '0.4'}))`,
+          }}
+        >
+          <Icon 
+            className="w-8 h-8" 
+            strokeWidth={isActive ? 2.5 : 2}
+          />
+          <span 
+            className={`font-cinzel text-xs tracking-wider whitespace-nowrap ${
+              isActive ? "font-bold" : "font-medium"
+            }`}
+            style={isActive ? { textShadow: "0 0 10px rgba(239, 169, 74, 0.8)" } : {}}
+          >
+            {name}
+          </span>
+        </div>
+      </Html>
+    </group>
   );
 };
 
@@ -197,8 +227,8 @@ const Menu = () => {
 
       {/* Bottom Navigation - Fixed Footer with 3D Spheres */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t-2 border-primary/30">
-        {/* 3D Canvas for spheres */}
-        <div className="h-32 w-full">
+        {/* 3D Canvas for spheres with icons inside */}
+        <div className="h-40 w-full">
           <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
             <ambientLight intensity={0.5} />
             <pointLight position={[10, 10, 10]} intensity={1} />
@@ -212,37 +242,11 @@ const Menu = () => {
                 position={[tab.position, 0, 0]}
                 scale={tab.scale}
                 color={activeTab === tab.id ? "#EFA94A" : "#8B4513"}
+                icon={tab.icon}
+                name={tab.name}
               />
             ))}
           </Canvas>
-        </div>
-
-        {/* Labels below spheres */}
-        <div className="flex items-center justify-around px-4 pb-3">
-          {tabs.map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            
-            return (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex flex-col items-center gap-1 transition-all duration-300 ${
-                  isActive ? "text-primary" : "text-muted-foreground"
-                }`}
-              >
-                <Icon className="w-4 h-4" strokeWidth={1.5} />
-                <span 
-                  className={`font-cinzel text-[10px] tracking-wider ${
-                    isActive ? "font-bold" : "font-medium"
-                  }`}
-                  style={isActive ? { textShadow: "0 0 8px rgba(239, 169, 74, 0.3)" } : {}}
-                >
-                  {tab.name}
-                </span>
-              </button>
-            );
-          })}
         </div>
         
         {/* Decorative rope border effect */}
