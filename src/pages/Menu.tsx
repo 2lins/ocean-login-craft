@@ -28,13 +28,27 @@ interface AnimatedSphereProps {
 
 const AnimatedSphere = ({ isActive, onClick, position, scale, color, icon: Icon, name }: AnimatedSphereProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
 
   useFrame((state) => {
+    const time = state.clock.getElapsedTime();
+    
+    // Floating animation - continuous gentle bobbing like nautical buoys
+    if (groupRef.current) {
+      groupRef.current.position.y = Math.sin(time * 0.8 + position[0]) * 0.15;
+    }
+    
     if (meshRef.current) {
-      meshRef.current.rotation.x = state.clock.getElapsedTime() * 0.2;
-      meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.3;
+      // Gentle continuous rotation
+      meshRef.current.rotation.x = Math.sin(time * 0.3) * 0.1;
+      meshRef.current.rotation.z = Math.cos(time * 0.2) * 0.05;
       
+      // Active sphere rotates 30° on Y axis smoothly
+      const targetRotationY = isActive ? Math.PI / 6 : 0; // 30° = π/6
+      meshRef.current.rotation.y += (targetRotationY - meshRef.current.rotation.y) * 0.05;
+      
+      // Scale animation
       const targetScale = isActive ? scale * 1.2 : hovered ? scale * 1.1 : scale;
       meshRef.current.scale.lerp(
         new THREE.Vector3(targetScale, targetScale, targetScale),
@@ -43,49 +57,72 @@ const AnimatedSphere = ({ isActive, onClick, position, scale, color, icon: Icon,
     }
   });
 
+  // Amber crystal color - warm golden brown like aged nautical glass
+  const amberColor = isActive ? "#D4A574" : "#8B6F47";
+  const glowColor = isActive ? "#EFA94A" : "#6B5435";
+
   return (
-    <group position={position}>
+    <group ref={groupRef} position={position}>
       <mesh
         ref={meshRef}
         onClick={onClick}
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
+        {/* Main amber crystal sphere */}
         <Sphere args={[1, 64, 64]}>
           <MeshDistortMaterial
-            color={color}
+            color={amberColor}
             attach="material"
-            distort={0.3}
-            speed={2}
-            roughness={0.2}
-            metalness={0.8}
-            emissive={color}
-            emissiveIntensity={isActive ? 0.5 : 0.2}
+            distort={0.15}
+            speed={1.5}
+            roughness={0.1}
+            metalness={0.3}
+            emissive={glowColor}
+            emissiveIntensity={isActive ? 0.6 : 0.15}
             transparent
-            opacity={0.7}
+            opacity={0.85}
+            clearcoat={1}
+            clearcoatRoughness={0.1}
           />
         </Sphere>
+
+        {/* Outer glow ring - light border effect when active */}
+        {isActive && (
+          <Sphere args={[1.08, 32, 32]}>
+            <meshBasicMaterial
+              color="#EFA94A"
+              transparent
+              opacity={0.25}
+              wireframe
+            />
+          </Sphere>
+        )}
       </mesh>
       
-      {/* Icon inside sphere */}
+      {/* Icon inside sphere - burnt gold color */}
       <Html center distanceFactor={6}>
         <div 
-          className={`flex flex-col items-center gap-1 pointer-events-none transition-all duration-300 ${
-            isActive ? "text-primary" : "text-foreground"
-          }`}
+          className="flex flex-col items-center gap-1.5 pointer-events-none transition-all duration-500"
           style={{
-            filter: `drop-shadow(0 0 ${isActive ? '12px' : '6px'} rgba(239, 169, 74, ${isActive ? '0.8' : '0.4'}))`,
+            filter: `drop-shadow(0 0 ${isActive ? '10px' : '4px'} rgba(212, 165, 116, ${isActive ? '0.9' : '0.5'}))`,
           }}
         >
           <Icon 
-            className="w-8 h-8" 
+            className="w-7 h-7 transition-all duration-500" 
             strokeWidth={isActive ? 2.5 : 2}
+            style={{
+              color: isActive ? "#D4A574" : "#A07855", // Burnt gold, not white or bright yellow
+            }}
           />
           <span 
-            className={`font-cinzel text-xs tracking-wider whitespace-nowrap ${
+            className={`font-cormorant text-xs tracking-wide whitespace-nowrap transition-all duration-500 ${
               isActive ? "font-bold" : "font-medium"
             }`}
-            style={isActive ? { textShadow: "0 0 10px rgba(239, 169, 74, 0.8)" } : {}}
+            style={{
+              color: isActive ? "#EFA94A" : "#C9A577", // Intense gold when active
+              textShadow: isActive ? "0 0 12px rgba(239, 169, 74, 0.7)" : "0 0 4px rgba(201, 165, 119, 0.3)",
+            }}
           >
             {name}
           </span>
