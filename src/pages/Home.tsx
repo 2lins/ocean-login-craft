@@ -107,7 +107,7 @@ const Home = () => {
       <Button
         onClick={handleZarpar}
         variant="outline"
-        className={`fixed bottom-8 right-8 font-cinzel text-sm tracking-widest border-primary/50 bg-background/40 backdrop-blur-sm text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-500 hover:shadow-[0_0_30px_rgba(239,169,74,0.5)] ${
+        className={`fixed bottom-8 right-8 z-50 font-cinzel text-sm tracking-widest border-primary/50 bg-background/40 backdrop-blur-sm text-primary hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all duration-500 hover:shadow-[0_0_30px_rgba(239,169,74,0.5)] ${
           isLoaded ? "opacity-100 translate-x-0" : "opacity-0 translate-x-8"
         }`}
         style={{ transitionDelay: "1s" }}
