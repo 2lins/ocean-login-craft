@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Anchor } from "lucide-react";
 import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
@@ -7,6 +8,7 @@ import marRevolto from "@/assets/mar-revolto-bg.jpg";
 const Home = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [playAudio, setPlayAudio] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoaded(true);
@@ -29,7 +31,7 @@ const Home = () => {
 
   const handleZarpar = () => {
     setPlayAudio(true);
-    // Future navigation logic here
+    navigate("/menu");
   };
 
   return (
