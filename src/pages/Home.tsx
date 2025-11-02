@@ -65,7 +65,7 @@ const Home = () => {
             <img 
               src={logoCais} 
               alt="Logo Cais Nobre"
-              className="w-64 h-64 md:w-80 md:h-80 drop-shadow-[0_0_30px_rgba(239,169,74,0.3)] animate-[float_6s_ease-in-out_infinite]"
+              className="w-48 h-48 md:w-56 md:h-56 drop-shadow-[0_0_30px_rgba(239,169,74,0.3)] animate-[float_6s_ease-in-out_infinite]"
             />
           </div>
         </div>
