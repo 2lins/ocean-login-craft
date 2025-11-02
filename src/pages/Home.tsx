@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Anchor } from "lucide-react";
-import brasao from "@/assets/brasao-cais-nobre.png";
+import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
 import marRevolto from "@/assets/mar-revolto-bg.jpg";
 
 const Home = () => {
@@ -63,8 +63,8 @@ const Home = () => {
             <div className="absolute -inset-4 bg-primary/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
             
             <img 
-              src={brasao} 
-              alt="Brasão Cais Nobre" 
+              src={logoCais} 
+              alt="Logo Cais Nobre"
               className="w-64 h-64 md:w-80 md:h-80 drop-shadow-[0_0_30px_rgba(239,169,74,0.3)] animate-[float_6s_ease-in-out_infinite]"
             />
           </div>
