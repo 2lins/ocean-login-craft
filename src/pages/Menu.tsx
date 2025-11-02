@@ -1,15 +1,69 @@
-import { useState, useEffect } from "react";
-import { Gem, Compass, Crown, ScrollText, Mail } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Gem, Compass, Crown } from "lucide-react";
 import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { MeshDistortMaterial, Sphere } from "@react-three/drei";
+import * as THREE from "three";
 
-type TabId = "menu" | "reservas" | "ranking" | "historia-conta" | "mensagens";
+type TabId = "menu" | "reservas" | "ranking";
 
 interface Tab {
   id: TabId;
   name: string;
   icon: typeof Gem;
   description: string;
+  position: number;
+  scale: number;
 }
+
+interface AnimatedSphereProps {
+  isActive: boolean;
+  onClick: () => void;
+  position: [number, number, number];
+  scale: number;
+  color: string;
+}
+
+const AnimatedSphere = ({ isActive, onClick, position, scale, color }: AnimatedSphereProps) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const [hovered, setHovered] = useState(false);
+
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.x = state.clock.getElapsedTime() * 0.2;
+      meshRef.current.rotation.y = state.clock.getElapsedTime() * 0.3;
+      
+      const targetScale = isActive ? scale * 1.2 : hovered ? scale * 1.1 : scale;
+      meshRef.current.scale.lerp(
+        new THREE.Vector3(targetScale, targetScale, targetScale),
+        0.1
+      );
+    }
+  });
+
+  return (
+    <mesh
+      ref={meshRef}
+      position={position}
+      onClick={onClick}
+      onPointerOver={() => setHovered(true)}
+      onPointerOut={() => setHovered(false)}
+    >
+      <Sphere args={[1, 64, 64]}>
+        <MeshDistortMaterial
+          color={color}
+          attach="material"
+          distort={0.3}
+          speed={2}
+          roughness={0.2}
+          metalness={0.8}
+          emissive={color}
+          emissiveIntensity={isActive ? 0.5 : 0.2}
+        />
+      </Sphere>
+    </mesh>
+  );
+};
 
 const Menu = () => {
   const [activeTab, setActiveTab] = useState<TabId>("menu");
@@ -21,34 +75,28 @@ const Menu = () => {
 
   const tabs: Tab[] = [
     {
-      id: "menu",
-      name: "Tesouros",
-      icon: Gem,
-      description: "Galeria dos drinks e pratos, apresentados como relíquias",
-    },
-    {
       id: "reservas",
       name: "Navegar",
       icon: Compass,
       description: "Reservas de mesa, eventos e mapa da casa",
+      position: -2.5,
+      scale: 0.8,
+    },
+    {
+      id: "menu",
+      name: "Tesouros",
+      icon: Gem,
+      description: "Galeria dos drinks e pratos, apresentados como relíquias",
+      position: 0,
+      scale: 1.0,
     },
     {
       id: "ranking",
       name: "Ordem",
       icon: Crown,
       description: "Ranking de clientes (Almirante, Comendador)",
-    },
-    {
-      id: "historia-conta",
-      name: "Relíquias",
-      icon: ScrollText,
-      description: "Perfil do usuário como Diário de Bordo",
-    },
-    {
-      id: "mensagens",
-      name: "Mensagem",
-      icon: Mail,
-      description: "Mensagens do bar, contato e convites sociais",
+      position: 2.5,
+      scale: 0.8,
     },
   ];
 
@@ -147,69 +195,54 @@ const Menu = () => {
         {renderContent()}
       </main>
 
-      {/* Bottom Navigation - Fixed Footer */}
+      {/* Bottom Navigation - Fixed Footer with 3D Spheres */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t-2 border-primary/30">
-        <div className="max-w-screen-xl mx-auto px-2 py-3">
-          <div className="flex items-center justify-around">
-            {tabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`group relative flex flex-col items-center gap-1 px-3 py-2 rounded-lg transition-all duration-300 ${
-                    isActive 
-                      ? "text-primary" 
-                      : "text-muted-foreground hover:text-primary/70"
+        {/* 3D Canvas for spheres */}
+        <div className="h-32 w-full">
+          <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
+            <ambientLight intensity={0.5} />
+            <pointLight position={[10, 10, 10]} intensity={1} />
+            <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8B0000" />
+            
+            {tabs.map((tab) => (
+              <AnimatedSphere
+                key={tab.id}
+                isActive={activeTab === tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                position={[tab.position, 0, 0]}
+                scale={tab.scale}
+                color={activeTab === tab.id ? "#EFA94A" : "#8B4513"}
+              />
+            ))}
+          </Canvas>
+        </div>
+
+        {/* Labels below spheres */}
+        <div className="flex items-center justify-around px-4 pb-3">
+          {tabs.map((tab) => {
+            const Icon = tab.icon;
+            const isActive = activeTab === tab.id;
+            
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex flex-col items-center gap-1 transition-all duration-300 ${
+                  isActive ? "text-primary" : "text-muted-foreground"
+                }`}
+              >
+                <Icon className="w-4 h-4" strokeWidth={1.5} />
+                <span 
+                  className={`font-cinzel text-[10px] tracking-wider ${
+                    isActive ? "font-bold" : "font-medium"
                   }`}
+                  style={isActive ? { textShadow: "0 0 8px rgba(239, 169, 74, 0.3)" } : {}}
                 >
-                  {/* Decorative corners for active tab */}
-                  {isActive && (
-                    <>
-                      <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-primary" />
-                      <div className="absolute top-0 right-0 w-2 h-2 border-t border-r border-primary" />
-                      <div className="absolute bottom-0 left-0 w-2 h-2 border-b border-l border-primary" />
-                      <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-primary" />
-                    </>
-                  )}
-                  
-                  {/* Glow effect on active */}
-                  {isActive && (
-                    <div className="absolute inset-0 bg-primary/10 rounded-lg blur-sm" />
-                  )}
-                  
-                  {/* Icon with animation */}
-                  <div className="relative">
-                    <Icon 
-                      className={`w-6 h-6 transition-all duration-300 ${
-                        isActive 
-                          ? "scale-110 drop-shadow-[0_0_8px_rgba(239,169,74,0.5)]" 
-                          : "group-hover:scale-105"
-                      }`}
-                      strokeWidth={isActive ? 2 : 1.5}
-                    />
-                  </div>
-                  
-                  {/* Label */}
-                  <span 
-                    className={`font-cinzel text-[10px] tracking-wider transition-all duration-300 ${
-                      isActive ? "font-bold" : "font-medium"
-                    }`}
-                    style={isActive ? { textShadow: "0 0 8px rgba(239, 169, 74, 0.3)" } : {}}
-                  >
-                    {tab.name}
-                  </span>
-                  
-                  {/* Active indicator dot */}
-                  {isActive && (
-                    <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-primary animate-pulse" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
+                  {tab.name}
+                </span>
+              </button>
+            );
+          })}
         </div>
         
         {/* Decorative rope border effect */}
