@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { UserStats } from "@/components/UserStats";
-import { ProgressBar } from "@/components/ProgressBar";
 import { Anchor } from "lucide-react";
 import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
 import marRevolto from "@/assets/mar-revolto-bg.jpg";
@@ -62,39 +60,26 @@ const Home = () => {
           <img 
             src={logoCais} 
             alt="Logo Cais Nobre"
-            className="w-24 h-24 mb-4 drop-shadow-[0_0_30px_rgba(239,169,74,0.5)]"
+            className="w-32 h-32 mb-6 drop-shadow-[0_0_30px_rgba(239,169,74,0.5)] animate-[float_6s_ease-in-out_infinite]"
           />
           
           {/* Title */}
           <h1 
-            className="font-cinzel text-4xl md:text-5xl font-bold text-primary tracking-[0.2em] mb-2"
+            className="font-cinzel text-5xl md:text-6xl font-bold text-primary tracking-[0.25em] mb-4"
             style={{ textShadow: "0 0 20px rgba(239, 169, 74, 0.5)" }}
           >
             CAIS NOBRE
           </h1>
           
-          <p className="font-cormorant text-lg text-muted-foreground italic text-center mb-8">
+          <p className="font-cormorant text-xl md:text-2xl text-muted-foreground italic text-center mb-12">
             Mixologia Moderna & Experiências Exclusivas
           </p>
 
-          {/* User Stats */}
-          <div className="w-full mb-6">
-            <UserStats />
-          </div>
-
-          {/* Progress Section */}
-          <div className="w-full bg-card/30 backdrop-blur-sm border border-primary/20 rounded-lg p-6 mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <Anchor className="w-5 h-5 text-primary" />
-              <h2 className="font-cinzel text-lg font-bold text-primary">Sua Jornada</h2>
-            </div>
-            <div className="space-y-4">
-              <ProgressBar current={1250} total={2000} label="Nível Navegador" />
-              <ProgressBar current={3} total={5} label="Missões Ativas" />
-            </div>
-            <p className="font-cormorant text-xs text-muted-foreground/80 italic mt-4 text-center">
-              Próximo nível: Comendador
-            </p>
+          {/* Decorative divider */}
+          <div className="flex items-center gap-4 mb-12 opacity-60">
+            <div className="h-px w-16 bg-gradient-to-r from-transparent to-primary" />
+            <Anchor className="w-6 h-6 text-primary animate-[pulse_3s_ease-in-out_infinite]" />
+            <div className="h-px w-16 bg-gradient-to-l from-transparent to-primary" />
           </div>
 
           {/* CTA Button */}
@@ -105,13 +90,6 @@ const Home = () => {
           >
             Explorar Happy Hours
           </Button>
-
-          {/* Decorative divider */}
-          <div className="flex items-center gap-4 mt-8 opacity-60">
-            <div className="h-px w-12 bg-gradient-to-r from-transparent to-primary" />
-            <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-            <div className="h-px w-12 bg-gradient-to-l from-transparent to-primary" />
-          </div>
         </div>
       </div>
 

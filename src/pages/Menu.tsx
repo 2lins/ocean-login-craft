@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
-import { Gem, Compass, Crown } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Gem, Compass, Crown, User } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
 import { Canvas } from "@react-three/fiber";
 import { AnimatedSphere } from "@/components/AnimatedSphere";
@@ -18,6 +20,7 @@ interface Tab {
 const Menu = () => {
   const [activeTab, setActiveTab] = useState<TabId>("menu");
   const [isLoaded, setIsLoaded] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoaded(true);
@@ -121,22 +124,32 @@ const Menu = () => {
       {/* Header with logo */}
       <header className="relative z-10 pt-6 pb-4 px-4">
         <div 
-          className={`flex flex-col items-center transition-all duration-1000 ${
+          className={`flex items-center justify-between transition-all duration-1000 ${
             isLoaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"
           }`}
         >
-          <img 
-            src={logoCais} 
-            alt="Logo Cais Nobre"
-            className="w-20 h-20 drop-shadow-[0_0_20px_rgba(239,169,74,0.3)]"
-          />
-          <h1 
-            className="mt-3 font-cinzel text-xl md:text-2xl font-bold text-primary tracking-[0.3em]"
-            style={{ textShadow: "0 0 15px rgba(239, 169, 74, 0.4)" }}
+          <div className="flex flex-col items-center flex-1">
+            <img 
+              src={logoCais} 
+              alt="Logo Cais Nobre"
+              className="w-20 h-20 drop-shadow-[0_0_20px_rgba(239,169,74,0.3)]"
+            />
+            <h1 
+              className="mt-3 font-cinzel text-xl md:text-2xl font-bold text-primary tracking-[0.3em]"
+              style={{ textShadow: "0 0 15px rgba(239, 169, 74, 0.4)" }}
+            >
+              CAIS NOBRE
+            </h1>
+            <div className="mt-2 h-px w-24 bg-gradient-to-r from-transparent via-primary to-transparent" />
+          </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/profile")}
+            className="absolute right-4 top-6 text-muted-foreground hover:text-primary"
           >
-            CAIS NOBRE
-          </h1>
-          <div className="mt-2 h-px w-24 bg-gradient-to-r from-transparent via-primary to-transparent" />
+            <User className="w-5 h-5" />
+          </Button>
         </div>
       </header>
 
