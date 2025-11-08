@@ -353,11 +353,14 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick, onStopMoving }: Ca
         const x = Math.sin(angle) * radius;
         const z = Math.cos(angle) * radius;
 
+        // ✅ CORREÇÃO: Calcula a rotação para a carta olhar para o centro
+        const cardRotation = Math.atan2(-x, -z);
+
         return (
           <Card3D
             key={card.id}
             position={[x, 0, z]}
-            rotation={-angle}
+            rotation={cardRotation} // ✅ Agora as cartas olham para o centro
             card={card}
             isActive={index === activeIndex}
             onClick={() => onCardClick(index)}
