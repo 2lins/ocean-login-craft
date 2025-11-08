@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
@@ -27,6 +27,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Index />} />
           <Route path="/home" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
@@ -41,6 +42,12 @@ const App = () => (
           <Route path="/app/pedidos" element={<AppGuard><AppPedidos /></AppGuard>} />
           <Route path="/app/conta" element={<AppGuard><AppConta /></AppGuard>} />
           <Route path="/app/scan" element={<AppGuard><AppScan /></AppGuard>} />
+          
+          {/* Legacy redirects from /login/* to /app/* for compatibility */}
+          <Route path="/login/pedidos" element={<Navigate to="/app/pedidos" replace />} />
+          <Route path="/login/checkout" element={<Navigate to="/app/checkout" replace />} />
+          <Route path="/login/status/:orderId" element={<Navigate to="/app/status/:orderId" replace />} />
+          <Route path="/login/cardapio" element={<Navigate to="/app/cardapio" replace />} />
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
