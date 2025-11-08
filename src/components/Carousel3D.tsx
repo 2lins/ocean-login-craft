@@ -54,10 +54,10 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
           smoothness={4}
         >
           <meshStandardMaterial
-            color={card.isLegendary ? "#FFD700" : isActive ? "#EFA94A" : "#D4A574"}
+            color={card.isLegendary ? "#FFD700" : isActive ? "#F2E4C8" : "#ABA18D"}
             metalness={card.isLegendary ? 0.9 : 0.6}
             roughness={card.isLegendary ? 0.1 : 0.2}
-            emissive={card.isLegendary ? "#FFD700" : isActive ? "#EFA94A" : "#8B6F47"}
+            emissive={card.isLegendary ? "#FFD700" : isActive ? "#F2E4C8" : "#6B6456"}
             emissiveIntensity={card.isLegendary ? 0.5 : isActive ? 0.3 : 0.1}
           />
         </RoundedBox>
@@ -125,9 +125,9 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
                     ? "text-xs sm:text-sm md:text-base text-primary font-extrabold"
                     : isActive ? "text-xs sm:text-sm md:text-base text-primary" : "text-[10px] sm:text-xs md:text-sm text-muted-foreground"
                 }`}
-                style={{
-                  textShadow: isActive || card.isLegendary ? "0 0 10px rgba(239, 169, 74, 0.5)" : "none",
-                }}
+                 style={{
+                   textShadow: isActive || card.isLegendary ? "0 0 10px rgba(242, 228, 200, 0.5)" : "none",
+                 }}
               >
                 {card.title}
               </h3>
@@ -156,7 +156,7 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
           smoothness={4}
         >
           <meshBasicMaterial
-            color={card.isLegendary ? "#FFD700" : "#EFA94A"}
+            color={card.isLegendary ? "#FFD700" : "#F2E4C8"}
             transparent
             opacity={card.isLegendary ? 0.3 : 0.2}
             wireframe
