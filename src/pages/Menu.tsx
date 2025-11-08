@@ -30,9 +30,9 @@ const Menu = () => {
   // Carousel cards data
   const carouselCards = [{
     id: 1,
-    title: "Happy Hour Especial",
-    description: "Drinks exclusivos com 30% de desconto",
-    imageUrl: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop"
+    title: "Sunset 2024",
+    description: "onde o por do sol prestigiou milhoes de sorrisos neste verao",
+    videoUrl: "/videos/sunset-2024.mp4"
   }, {
     id: 2,
     title: "Noite dos Navegadores",
