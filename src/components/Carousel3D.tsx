@@ -98,14 +98,15 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
                 <source src={card.videoUrl} type="video/mp4" />
               </video>
             ) : (
-              <div 
+              <img 
+                key={card.imageUrl}
+                src={card.imageUrl}
+                alt={card.title}
                 className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 ${
                   card.isLegendary ? 'border-primary border-2' : 'border-primary/30'
                 }`}
                 style={{
-                  backgroundImage: card.imageUrl ? `url(${card.imageUrl})` : 'none',
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
+                  objectFit: "cover",
                 }}
               />
             )}
