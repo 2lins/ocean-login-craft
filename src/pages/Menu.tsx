@@ -154,8 +154,16 @@ const Menu = () => {
 
       {/* Hero Section - Full Screen */}
       <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-        {/* Background placeholder - will be replaced with video/image */}
-        <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-primary/10" />
+        {/* Video Background */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/videos/hero-background.mp4" type="video/mp4" />
+        </video>
         
         {/* Grid pattern overlay */}
         <div 
