@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
@@ -218,6 +218,97 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
   );
 };
 
+// Golden Particles Component for Legendary Cards
+const GoldenParticles = ({ position }: { position: [number, number, number] }) => {
+  const pointsRef = useRef<THREE.Points>(null);
+  const particleCount = 100;
+  
+  const particles = useMemo(() => {
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+    const sizes = new Float32Array(particleCount);
+    
+    for (let i = 0; i < particleCount; i++) {
+      const i3 = i * 3;
+      
+      // Random position around the card (sphere distribution)
+      const radius = 2 + Math.random() * 1.5;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.random() * Math.PI;
+      
+      positions[i3] = radius * Math.sin(phi) * Math.cos(theta);
+      positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
+      positions[i3 + 2] = radius * Math.cos(phi);
+      
+      // Golden color variations
+      colors[i3] = 1.0; // R
+      colors[i3 + 1] = 0.843 + Math.random() * 0.1; // G (slight variation)
+      colors[i3 + 2] = 0.0 + Math.random() * 0.2; // B (slight variation)
+      
+      // Random sizes
+      sizes[i] = Math.random() * 0.05 + 0.02;
+    }
+    
+    return { positions, colors, sizes };
+  }, []);
+  
+  useFrame((state) => {
+    if (pointsRef.current) {
+      // Slow rotation around Y axis
+      pointsRef.current.rotation.y = state.clock.getElapsedTime() * 0.2;
+      
+      // Gentle pulsating effect
+      const scale = 1 + Math.sin(state.clock.getElapsedTime() * 0.5) * 0.1;
+      pointsRef.current.scale.set(scale, scale, scale);
+      
+      // Animate individual particles (floating effect)
+      const positions = pointsRef.current.geometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < particleCount; i++) {
+        const i3 = i * 3;
+        const time = state.clock.getElapsedTime();
+        
+        // Add subtle floating motion
+        positions[i3 + 1] += Math.sin(time + i) * 0.001;
+      }
+      pointsRef.current.geometry.attributes.position.needsUpdate = true;
+    }
+  });
+  
+  return (
+    <points ref={pointsRef} position={position}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          count={particleCount}
+          array={particles.positions}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-color"
+          count={particleCount}
+          array={particles.colors}
+          itemSize={3}
+        />
+        <bufferAttribute
+          attach="attributes-size"
+          count={particleCount}
+          array={particles.sizes}
+          itemSize={1}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        size={0.05}
+        vertexColors
+        transparent
+        opacity={0.6}
+        sizeAttenuation
+        blending={THREE.AdditiveBlending}
+        depthWrite={false}
+      />
+    </points>
+  );
+};
+
 interface Carousel3DProps {
   cards: CarouselCard[];
   activeIndex: number;
@@ -308,16 +399,20 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick, onStopMoving }: Ca
         const z = Math.cos(angle) * radius;
 
         return (
-          <Card3D
-            key={card.id}
-            position={[x, 0, z]}
-            rotation={-angle}
-            card={card}
-            isActive={index === activeIndex}
-            onClick={() => onCardClick(index)}
-            isMoving={isMoving}
-            rotationProgress={rotationProgress}
-          />
+          <group key={card.id}>
+            <Card3D
+              position={[x, 0, z]}
+              rotation={-angle}
+              card={card}
+              isActive={index === activeIndex}
+              onClick={() => onCardClick(index)}
+              isMoving={isMoving}
+              rotationProgress={rotationProgress}
+            />
+            
+            {/* Add golden particles for legendary cards */}
+            {card.isLegendary && <GoldenParticles position={[x, 0, z]} />}
+          </group>
         );
       })}
     </group>
