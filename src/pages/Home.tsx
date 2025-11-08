@@ -1,13 +1,19 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Canvas } from "@react-three/fiber";
+import { Environment, OrbitControls } from "@react-three/drei";
+import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Anchor } from "lucide-react";
+import { Carousel3D } from "@/components/carousel";
+import { NewsSection3D } from "@/components/news";
 import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
 import marRevolto from "@/assets/mar-revolto-bg.jpg";
 
 const Home = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [playAudio, setPlayAudio] = useState(false);
+  const [activeCarouselIndex, setActiveCarouselIndex] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,6 +39,74 @@ const Home = () => {
     navigate("/menu");
   };
 
+  // Carousel cards data
+  const carouselCards = [
+    {
+      id: 1,
+      title: "Happy Hour Especial",
+      description: "Drinks com 30% de desconto",
+      category: 'promo' as const
+    },
+    {
+      id: 2,
+      title: "Música ao Vivo",
+      description: "Todas as sextas-feiras",
+      category: 'event' as const
+    },
+    {
+      id: 3,
+      title: "Novo Menu",
+      description: "Coquetéis exclusivos",
+      category: 'menu' as const
+    }
+  ];
+
+  // News data
+  const newsItems = [
+    {
+      id: 1,
+      title: "Happy Hour Premium",
+      description: "De segunda a quinta, das 17h às 20h. Drinks selecionados com 30% de desconto.",
+      category: 'promocao' as const,
+      isHighlight: true
+    },
+    {
+      id: 2,
+      title: "Noite de Jazz",
+      description: "Toda sexta-feira a partir das 21h. Música ao vivo com os melhores artistas.",
+      category: 'evento' as const,
+      isHighlight: true
+    },
+    {
+      id: 3,
+      title: "Novos Coquetéis de Autor",
+      description: "Conheça nossa nova linha de drinks exclusivos criados pelo nosso mixologista.",
+      category: 'cardapio' as const,
+      isHighlight: false
+    },
+    {
+      id: 4,
+      title: "DJ Especial",
+      description: "Sábados com música eletrônica e house music.",
+      category: 'musica' as const,
+      isHighlight: false
+    },
+    {
+      id: 5,
+      title: "Menu Executivo",
+      description: "Almoço com entrada, prato principal e sobremesa.",
+      category: 'cardapio' as const,
+      isHighlight: false
+    },
+    {
+      id: 6,
+      title: "Festa Temática",
+      description: "Último sábado do mês com tema especial e open bar.",
+      category: 'evento' as const,
+      isHighlight: false
+    }
+  ];
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-background">
       {/* Animated background */}
@@ -51,8 +125,9 @@ const Home = () => {
 
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 py-12">
+        {/* Hero Section */}
         <div 
-          className={`flex flex-col items-center w-full max-w-md transition-all duration-1000 ${
+          className={`flex flex-col items-center w-full max-w-md transition-all duration-1000 mb-16 ${
             isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
           }`}
         >
@@ -91,6 +166,48 @@ const Home = () => {
             Explorar Happy Hours
           </Button>
         </div>
+
+        {/* 3D Carousel Section */}
+        <div className="w-full max-w-7xl mx-auto mb-16">
+          <h2 className="font-cinzel text-4xl font-bold text-center mb-8 text-primary">
+            Destaques
+          </h2>
+          <div className="h-96 w-full">
+            <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
+              <Suspense fallback={null}>
+                <ambientLight intensity={0.4} />
+                <directionalLight position={[10, 10, 5]} intensity={1} />
+                <Carousel3D
+                  cards={carouselCards}
+                  activeIndex={activeCarouselIndex}
+                  onCardClick={setActiveCarouselIndex}
+                />
+                <Environment preset="sunset" />
+                <OrbitControls 
+                  enableZoom={false} 
+                  enablePan={false} 
+                  enableRotate={false} 
+                />
+              </Suspense>
+            </Canvas>
+          </div>
+          <div className="flex justify-center gap-2 mt-4">
+            {carouselCards.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setActiveCarouselIndex(index)}
+                className={`w-2 h-2 rounded-full transition-all ${
+                  index === activeCarouselIndex 
+                    ? 'bg-primary w-8' 
+                    : 'bg-muted-foreground/30'
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* News Section 3D */}
+        <NewsSection3D news={newsItems} />
       </div>
 
       {/* Quote */}
