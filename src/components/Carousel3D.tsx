@@ -28,7 +28,7 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
 
   // Responsive sizing based on window width
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-  const baseScale = card.isLegendary ? (isMobile ? 1.1 : 1.2) : 1;
+  const baseScale = 1; // Same scale for all cards
 
   useFrame(() => {
     if (meshRef.current) {
@@ -49,11 +49,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
         onPointerOut={() => setHovered(false)}
       >
         <RoundedBox 
-          args={card.isLegendary 
-            ? (isMobile ? [2.2, 2.8, 0.15] : [2.8, 3.5, 0.15]) 
-            : [2.5, 3, 0.1]
-          } 
-          radius={card.isLegendary ? 0.15 : 0.1} 
+          args={[2.5, 3, 0.1]} 
+          radius={0.1} 
           smoothness={4}
         >
           <meshStandardMaterial
@@ -68,9 +65,9 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
         {/* Card content overlay */}
         <Html
           center
-          distanceFactor={isMobile ? 7 : 6}
+          distanceFactor={isMobile ? 6.5 : 5.5}
           style={{
-            width: card.isLegendary ? (isMobile ? "260px" : "320px") : (isMobile ? "240px" : "280px"),
+            width: isMobile ? "220px" : "260px",
             pointerEvents: "none",
             userSelect: "none",
             opacity: isMoving ? 0 : 1,
@@ -94,8 +91,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
                   preload="auto"
                   className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
                     card.isLegendary 
-                      ? 'w-32 h-20 sm:w-48 sm:h-32 md:w-56 md:h-36 border-primary' 
-                      : 'w-28 h-16 sm:w-40 sm:h-24 md:w-48 md:h-32 border-primary/30'
+                      ? 'w-24 h-16 sm:w-32 sm:h-20 md:w-40 md:h-24 border-primary border-2' 
+                      : 'w-24 h-16 sm:w-32 sm:h-20 md:w-40 md:h-24 border-primary/30'
                   }`}
                   style={{
                     objectFit: "cover",
@@ -108,8 +105,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
               <div 
                 className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
                   card.isLegendary 
-                    ? 'w-32 h-20 sm:w-48 sm:h-32 md:w-56 md:h-36 border-primary' 
-                    : 'w-28 h-16 sm:w-40 sm:h-24 md:w-48 md:h-32 border-primary/30'
+                    ? 'w-24 h-16 sm:w-32 sm:h-20 md:w-40 md:h-24 border-primary border-2' 
+                    : 'w-24 h-16 sm:w-32 sm:h-20 md:w-40 md:h-24 border-primary/30'
                 }`}
                 style={{
                   backgroundImage: card.imageUrl ? `url(${card.imageUrl})` : 'none',
@@ -129,7 +126,7 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
               <h3 
                 className={`font-cinzel font-bold mb-0.5 transition-all duration-300 ${
                   card.isLegendary 
-                    ? "text-sm sm:text-base md:text-lg text-primary"
+                    ? "text-xs sm:text-sm md:text-base text-primary font-extrabold"
                     : isActive ? "text-xs sm:text-sm md:text-base text-primary" : "text-[10px] sm:text-xs md:text-sm text-muted-foreground"
                 }`}
                 style={{
@@ -156,10 +153,10 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
       {(isActive || card.isLegendary) && (
         <RoundedBox 
           args={card.isLegendary 
-            ? (isMobile ? [2.3, 2.9, 0.17] : [2.9, 3.6, 0.17]) 
+            ? [2.55, 3.05, 0.11] 
             : [2.6, 3.1, 0.12]
           } 
-          radius={card.isLegendary ? 0.15 : 0.1} 
+          radius={0.1} 
           smoothness={4}
         >
           <meshBasicMaterial
@@ -177,7 +174,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
 // Golden Particles Component for Legendary Cards
 const GoldenParticles = ({ position }: { position: [number, number, number] }) => {
   const pointsRef = useRef<THREE.Points>(null);
-  const particleCount = 50; // Reduzido de 100 para 50
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const particleCount = isMobile ? 20 : 30;
   
   const particles = useMemo(() => {
     const positions = new Float32Array(particleCount * 3);
@@ -188,7 +186,7 @@ const GoldenParticles = ({ position }: { position: [number, number, number] }) =
       const i3 = i * 3;
       
       // Random position around the card (sphere distribution)
-      const radius = 2 + Math.random() * 1.5;
+      const radius = 1.8 + Math.random() * 0.4; // Max 2.2
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI;
       
@@ -202,7 +200,7 @@ const GoldenParticles = ({ position }: { position: [number, number, number] }) =
       colors[i3 + 2] = 0.0 + Math.random() * 0.2; // B
       
       // Random sizes
-      sizes[i] = Math.random() * 0.05 + 0.02;
+      sizes[i] = Math.random() * 0.03 + 0.01;
     }
     
     return { positions, colors, sizes };
@@ -245,7 +243,7 @@ const GoldenParticles = ({ position }: { position: [number, number, number] }) =
         size={0.05}
         vertexColors
         transparent
-        opacity={0.6}
+        opacity={0.4}
         sizeAttenuation
         blending={THREE.AdditiveBlending}
         depthWrite={false}
