@@ -1,0 +1,159 @@
+import { useRef, useState } from "react";
+import { useFrame } from "@react-three/fiber";
+import { Html, RoundedBox } from "@react-three/drei";
+import * as THREE from "three";
+
+interface CarouselCard {
+  id: number;
+  title: string;
+  description: string;
+  imageUrl: string;
+}
+
+interface Card3DProps {
+  position: [number, number, number];
+  rotation: number;
+  card: CarouselCard;
+  isActive: boolean;
+  onClick: () => void;
+}
+
+const Card3D = ({ position, rotation, card, isActive, onClick }: Card3DProps) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
+  const [hovered, setHovered] = useState(false);
+
+  useFrame((state) => {
+    const time = state.clock.getElapsedTime();
+    
+    if (groupRef.current) {
+      // Gentle floating animation
+      groupRef.current.position.y = position[1] + Math.sin(time * 0.5 + rotation) * 0.1;
+    }
+    
+    if (meshRef.current) {
+      // Scale animation
+      const targetScale = isActive ? 1.15 : hovered ? 1.05 : 1;
+      const currentScale = meshRef.current.scale.x;
+      const newScale = currentScale + (targetScale - currentScale) * 0.1;
+      meshRef.current.scale.set(newScale, newScale, newScale);
+    }
+  });
+
+  return (
+    <group ref={groupRef} position={position} rotation={[0, rotation, 0]}>
+      <mesh
+        ref={meshRef}
+        onClick={onClick}
+        onPointerOver={() => setHovered(true)}
+        onPointerOut={() => setHovered(false)}
+      >
+        <RoundedBox args={[2.5, 3, 0.1]} radius={0.1} smoothness={4}>
+          <meshStandardMaterial
+            color={isActive ? "#EFA94A" : "#D4A574"}
+            metalness={0.6}
+            roughness={0.2}
+            emissive={isActive ? "#EFA94A" : "#8B6F47"}
+            emissiveIntensity={isActive ? 0.3 : 0.1}
+          />
+        </RoundedBox>
+
+        {/* Card content overlay */}
+        <Html
+          center
+          distanceFactor={6}
+          style={{
+            width: "250px",
+            pointerEvents: "none",
+            userSelect: "none",
+          }}
+        >
+          <div className="flex flex-col items-center gap-2 p-4 transition-all duration-300">
+            {/* Image placeholder */}
+            <div 
+              className="w-48 h-32 rounded-lg bg-background/80 backdrop-blur-sm border border-primary/30 overflow-hidden"
+              style={{
+                backgroundImage: `url(${card.imageUrl})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+            
+            {/* Text content */}
+            <div className="text-center">
+              <h3 
+                className={`font-cinzel font-bold mb-1 transition-all duration-300 ${
+                  isActive ? "text-base text-primary" : "text-sm text-muted-foreground"
+                }`}
+                style={{
+                  textShadow: isActive ? "0 0 10px rgba(239, 169, 74, 0.5)" : "none",
+                }}
+              >
+                {card.title}
+              </h3>
+              <p 
+                className={`font-cormorant italic transition-all duration-300 ${
+                  isActive ? "text-xs text-foreground" : "text-[10px] text-muted-foreground/70"
+                }`}
+              >
+                {card.description}
+              </p>
+            </div>
+          </div>
+        </Html>
+      </mesh>
+
+      {/* Glow effect when active */}
+      {isActive && (
+        <RoundedBox args={[2.6, 3.1, 0.12]} radius={0.1} smoothness={4}>
+          <meshBasicMaterial
+            color="#EFA94A"
+            transparent
+            opacity={0.2}
+            wireframe
+          />
+        </RoundedBox>
+      )}
+    </group>
+  );
+};
+
+interface Carousel3DProps {
+  cards: CarouselCard[];
+  activeIndex: number;
+  onCardClick: (index: number) => void;
+}
+
+export const Carousel3D = ({ cards, activeIndex, onCardClick }: Carousel3DProps) => {
+  const groupRef = useRef<THREE.Group>(null);
+
+  useFrame(() => {
+    if (groupRef.current) {
+      // Smooth rotation to center the active card
+      const targetRotation = -(activeIndex * (Math.PI * 2)) / cards.length;
+      groupRef.current.rotation.y += (targetRotation - groupRef.current.rotation.y) * 0.05;
+    }
+  });
+
+  return (
+    <group ref={groupRef}>
+      {cards.map((card, index) => {
+        const angle = (index * Math.PI * 2) / cards.length;
+        const radius = 4;
+        const x = Math.sin(angle) * radius;
+        const z = Math.cos(angle) * radius;
+
+        return (
+          <Card3D
+            key={card.id}
+            position={[x, 0, z]}
+            rotation={-angle}
+            card={card}
+            isActive={index === activeIndex}
+            onClick={() => onCardClick(index)}
+          />
+        );
+      })}
+    </group>
+  );
+};

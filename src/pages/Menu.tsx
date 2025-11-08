@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Gem, Compass, Crown, User } from "lucide-react";
+import { Gem, Compass, Crown, User, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
 import { Canvas } from "@react-three/fiber";
 import { AnimatedSphere } from "@/components/AnimatedSphere";
+import { Carousel3D } from "@/components/Carousel3D";
 
 type TabId = "menu" | "reservas" | "ranking";
 
@@ -20,11 +21,48 @@ interface Tab {
 const Menu = () => {
   const [activeTab, setActiveTab] = useState<TabId>("menu");
   const [isLoaded, setIsLoaded] = useState(false);
+  const [carouselIndex, setCarouselIndex] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoaded(true);
   }, []);
+
+  // Carousel cards data
+  const carouselCards = [
+    {
+      id: 1,
+      title: "Happy Hour Especial",
+      description: "Drinks exclusivos com 30% de desconto",
+      imageUrl: "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=400&h=300&fit=crop",
+    },
+    {
+      id: 2,
+      title: "Noite dos Navegadores",
+      description: "Evento exclusivo para membros",
+      imageUrl: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop",
+    },
+    {
+      id: 3,
+      title: "Nova Carta de Drinks",
+      description: "Descubra nossos coquetéis artesanais",
+      imageUrl: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=300&fit=crop",
+    },
+    {
+      id: 4,
+      title: "Missão Semanal",
+      description: "Complete e ganhe pontos em dobro",
+      imageUrl: "https://images.unsplash.com/photo-1481833761820-0509d3217039?w=400&h=300&fit=crop",
+    },
+  ];
+
+  const handleNextCard = () => {
+    setCarouselIndex((prev) => (prev + 1) % carouselCards.length);
+  };
+
+  const handlePrevCard = () => {
+    setCarouselIndex((prev) => (prev - 1 + carouselCards.length) % carouselCards.length);
+  };
 
   const tabs: Tab[] = [
     {
@@ -152,6 +190,63 @@ const Menu = () => {
           </Button>
         </div>
       </header>
+
+      {/* 3D Carousel Section */}
+      <section className="relative z-10 h-[400px] mb-8">
+        <div 
+          className={`transition-all duration-1000 delay-300 ${
+            isLoaded ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
+            <ambientLight intensity={0.6} />
+            <pointLight position={[10, 10, 10]} intensity={1} />
+            <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8B0000" />
+            <spotLight position={[0, 10, 0]} intensity={0.8} angle={0.3} penumbra={1} />
+            
+            <Carousel3D
+              cards={carouselCards}
+              activeIndex={carouselIndex}
+              onCardClick={setCarouselIndex}
+            />
+          </Canvas>
+        </div>
+
+        {/* Carousel navigation buttons */}
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4 z-20">
+          <Button
+            onClick={handlePrevCard}
+            variant="outline"
+            size="icon"
+            className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </Button>
+          
+          <div className="flex gap-2 items-center">
+            {carouselCards.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCarouselIndex(index)}
+                className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                  index === carouselIndex 
+                    ? "bg-primary w-6" 
+                    : "bg-primary/30 hover:bg-primary/50"
+                }`}
+              />
+            ))}
+          </div>
+
+          <Button
+            onClick={handleNextCard}
+            variant="outline"
+            size="icon"
+            className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </Button>
+        </div>
+      </section>
 
       {/* Main content area */}
       <main className="relative z-10 flex items-center justify-center min-h-[calc(100vh-280px)]">
