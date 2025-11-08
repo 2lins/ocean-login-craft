@@ -16,12 +16,15 @@ interface Card3DProps {
   card: CarouselCard;
   isActive: boolean;
   onClick: () => void;
+  isMoving: boolean;
+  carouselVelocity: number;
 }
 
-const Card3D = ({ position, rotation, card, isActive, onClick }: Card3DProps) => {
+const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, carouselVelocity }: Card3DProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
+  const targetRotationY = useRef(0);
 
   useFrame((state) => {
     const time = state.clock.getElapsedTime();
@@ -38,9 +41,31 @@ const Card3D = ({ position, rotation, card, isActive, onClick }: Card3DProps) =>
       const newScale = currentScale + (targetScale - currentScale) * 0.15;
       meshRef.current.scale.set(newScale, newScale, newScale);
       
-      // Smooth rotation for depth effect
-      const targetRotationY = rotation + (isActive ? Math.sin(time * 0.3) * 0.05 : 0);
-      meshRef.current.rotation.y += (targetRotationY - meshRef.current.rotation.y) * 0.1;
+      // Dynamic rotation based on carousel movement
+      if (isMoving) {
+        // During movement: rotate cards dynamically
+        const rotationSpeed = isActive ? carouselVelocity * 2 : carouselVelocity * 4;
+        targetRotationY.current += rotationSpeed;
+        meshRef.current.rotation.y = targetRotationY.current;
+        
+        // Add subtle X-axis rotation for depth during movement
+        meshRef.current.rotation.x = Math.sin(targetRotationY.current) * 0.1;
+      } else {
+        // When stopped: smoothly return to rest position
+        if (isActive) {
+          // Active card: smooth to zero rotation with subtle oscillation
+          const restRotation = Math.sin(time * 0.3) * 0.05;
+          targetRotationY.current += (restRotation - targetRotationY.current) * 0.1;
+          meshRef.current.rotation.y = targetRotationY.current;
+          meshRef.current.rotation.x += (0 - meshRef.current.rotation.x) * 0.1;
+        } else {
+          // Inactive cards: maintain slight rotation based on position
+          const baseRotation = rotation;
+          targetRotationY.current += (baseRotation - targetRotationY.current) * 0.08;
+          meshRef.current.rotation.y = targetRotationY.current;
+          meshRef.current.rotation.x += (0 - meshRef.current.rotation.x) * 0.08;
+        }
+      }
     }
   });
 
@@ -130,6 +155,8 @@ interface Carousel3DProps {
 
 export const Carousel3D = ({ cards, activeIndex, onCardClick }: Carousel3DProps) => {
   const groupRef = useRef<THREE.Group>(null);
+  const [isMoving, setIsMoving] = useState(false);
+  const [carouselVelocity, setCarouselVelocity] = useState(0);
 
   useFrame(() => {
     if (groupRef.current) {
@@ -137,6 +164,11 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick }: Carousel3DProps)
       const targetRotation = -(activeIndex * (Math.PI * 2)) / cards.length;
       const diff = targetRotation - groupRef.current.rotation.y;
       groupRef.current.rotation.y += diff * 0.08;
+      
+      // Detect movement and calculate velocity
+      const velocity = Math.abs(diff);
+      setCarouselVelocity(velocity);
+      setIsMoving(velocity > 0.01);
     }
   });
 
@@ -156,6 +188,8 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick }: Carousel3DProps)
             card={card}
             isActive={index === activeIndex}
             onClick={() => onCardClick(index)}
+            isMoving={isMoving}
+            carouselVelocity={carouselVelocity}
           />
         );
       })}
