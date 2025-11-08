@@ -143,23 +143,25 @@ const Menu = () => {
       </header>
 
       {/* 3D Carousel Section */}
-      <section className="relative z-10 h-[400px] mb-8">
+      <section className="relative z-10 w-full px-4 mb-8">
         <div className={`transition-all duration-1000 delay-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
-          <Canvas camera={{
-          position: [0, 0, 8],
-          fov: 50
-        }} className="bg-[#150e0a] rounded-none">
-            <ambientLight intensity={0.6} />
-            <pointLight position={[10, 10, 10]} intensity={1} />
-            <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8B0000" />
-            <spotLight position={[0, 10, 0]} intensity={0.8} angle={0.3} penumbra={1} />
-            
-            <Carousel3D cards={carouselCards} activeIndex={carouselIndex} onCardClick={setCarouselIndex} />
-          </Canvas>
+          <div className="relative h-[380px] rounded-xl overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm">
+            <Canvas camera={{
+              position: [0, 0, 8],
+              fov: 50
+            }}>
+              <ambientLight intensity={0.6} />
+              <pointLight position={[10, 10, 10]} intensity={1} />
+              <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8B0000" />
+              <spotLight position={[0, 10, 0]} intensity={0.8} angle={0.3} penumbra={1} />
+              
+              <Carousel3D cards={carouselCards} activeIndex={carouselIndex} onCardClick={setCarouselIndex} />
+            </Canvas>
+          </div>
         </div>
 
         {/* Carousel navigation buttons */}
-        <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-4 z-20">
+        <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-4 z-20">
           <Button onClick={handlePrevCard} variant="outline" size="icon" className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground">
             <ChevronLeft className="w-5 h-5" />
           </Button>
