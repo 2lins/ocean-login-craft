@@ -26,14 +26,14 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
   const meshRef = useRef<THREE.Mesh>(null);
   const [hovered, setHovered] = useState(false);
 
-  // Responsive sizing based on window width
+  // Responsive sizing - Story format dimensions
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-  const baseScale = 1; // Same scale for all cards
+  const baseScale = 0.85; // Smaller base scale for better fit
 
   useFrame(() => {
     if (meshRef.current) {
-      // Smooth scale animation only
-      const targetScale = isActive ? baseScale * 1.15 : hovered ? baseScale * 1.05 : baseScale;
+      // Smooth scale animation - more emphasis on active card
+      const targetScale = isActive ? baseScale * 1.2 : hovered ? baseScale * 1.05 : baseScale;
       const currentScale = meshRef.current.scale.x;
       const newScale = currentScale + (targetScale - currentScale) * 0.15;
       meshRef.current.scale.set(newScale, newScale, newScale);
@@ -49,7 +49,7 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
         onPointerOut={() => setHovered(false)}
       >
         <RoundedBox 
-          args={[1.8, 3.2, 0.1]} 
+          args={[1.4, 2.6, 0.08]} 
           radius={0.1} 
           smoothness={4}
         >
@@ -65,9 +65,9 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
         {/* Card content overlay */}
         <Html
           center
-          distanceFactor={isMobile ? 6.5 : 5.5}
+          distanceFactor={isMobile ? 5.8 : 4.8}
           style={{
-            width: isMobile ? "160px" : "180px",
+            width: isMobile ? "140px" : "160px",
             pointerEvents: "none",
             userSelect: "none",
             opacity: isMoving ? 0 : 1,
@@ -91,8 +91,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
                   preload="auto"
                   className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
                     card.isLegendary 
-                      ? 'w-28 h-48 sm:w-32 sm:h-56 md:w-36 md:h-64 border-primary border-2' 
-                      : 'w-28 h-48 sm:w-32 sm:h-56 md:w-36 md:h-64 border-primary/30'
+                      ? 'w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 border-primary border-2' 
+                      : 'w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 border-primary/30'
                   }`}
                   style={{
                     objectFit: "cover",
@@ -105,8 +105,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
               <div 
                 className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
                   card.isLegendary 
-                    ? 'w-28 h-48 sm:w-32 sm:h-56 md:w-36 md:h-64 border-primary border-2' 
-                    : 'w-28 h-48 sm:w-32 sm:h-56 md:w-36 md:h-64 border-primary/30'
+                    ? 'w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 border-primary border-2' 
+                    : 'w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 border-primary/30'
                 }`}
                 style={{
                   backgroundImage: card.imageUrl ? `url(${card.imageUrl})` : 'none',
@@ -153,9 +153,9 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
       {(isActive || card.isLegendary) && (
         <RoundedBox 
           args={card.isLegendary 
-            ? [1.85, 3.25, 0.11] 
-            : [1.9, 3.3, 0.12]
-          } 
+            ? [1.45, 2.65, 0.09] 
+            : [1.5, 2.7, 0.1]
+          }
           radius={0.1} 
           smoothness={4}
         >
@@ -337,7 +337,7 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick, onStopMoving }: Ca
     <group ref={groupRef}>
       {cards.map((card, index) => {
         const angle = (index * Math.PI * 2) / cards.length;
-        const radius = 4;
+        const radius = 4.5; // Increased for better spacing
         const x = Math.sin(angle) * radius;
         const z = Math.cos(angle) * radius;
 

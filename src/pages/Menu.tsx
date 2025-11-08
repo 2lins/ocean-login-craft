@@ -195,10 +195,10 @@ const Menu = () => {
           onTouchMove={onTouchMove}
           onTouchEnd={onTouchEnd}
         >
-          <div className="relative h-[280px] sm:h-[300px] md:h-[340px] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm">
+          <div className="relative h-[450px] sm:h-[500px] md:h-[550px] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm">
             <Canvas camera={{
-              position: [0, 0, typeof window !== 'undefined' && window.innerWidth < 640 ? 10 : 9],
-              fov: typeof window !== 'undefined' && window.innerWidth < 640 ? 50 : 45
+              position: [0, 0, typeof window !== 'undefined' && window.innerWidth < 640 ? 11 : 10],
+              fov: typeof window !== 'undefined' && window.innerWidth < 640 ? 45 : 40
             }}>
               <ambientLight intensity={0.6} />
               <pointLight position={[10, 10, 10]} intensity={1} />
