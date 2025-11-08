@@ -1,1 +1,1 @@
-// Carousel exports - código será adicionado
+export { Carousel3D } from './Carousel3D';
