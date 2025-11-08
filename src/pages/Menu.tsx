@@ -148,7 +148,7 @@ const Menu = () => {
           <Canvas camera={{
           position: [0, 0, 8],
           fov: 50
-        }} className="rounded-sm bg-[#150e0a]">
+        }} className="bg-[#150e0a] rounded-none">
             <ambientLight intensity={0.6} />
             <pointLight position={[10, 10, 10]} intensity={1} />
             <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8B0000" />
