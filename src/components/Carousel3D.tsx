@@ -8,7 +8,9 @@ interface CarouselCard {
   id: number;
   title: string;
   description: string;
-  imageUrl: string;
+  imageUrl?: string;
+  videoUrl?: string;
+  isLegendary?: boolean;
 }
 
 interface Card3DProps {
@@ -28,8 +30,9 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
 
   useFrame(() => {
     if (meshRef.current) {
-      // Smooth scale animation
-      const targetScale = isActive ? 1.15 : hovered ? 1.05 : 1;
+      // Smooth scale animation - legendary cards scale more
+      const baseScale = card.isLegendary ? 1.2 : 1;
+      const targetScale = isActive ? baseScale * 1.15 : hovered ? baseScale * 1.05 : baseScale;
       const currentScale = meshRef.current.scale.x;
       const newScale = currentScale + (targetScale - currentScale) * 0.15;
       meshRef.current.scale.set(newScale, newScale, newScale);
@@ -62,13 +65,17 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
         onPointerOver={() => setHovered(true)}
         onPointerOut={() => setHovered(false)}
       >
-        <RoundedBox args={[2.5, 3, 0.1]} radius={0.1} smoothness={4}>
+        <RoundedBox 
+          args={card.isLegendary ? [2.8, 3.5, 0.15] : [2.5, 3, 0.1]} 
+          radius={card.isLegendary ? 0.15 : 0.1} 
+          smoothness={4}
+        >
           <meshStandardMaterial
-            color={isActive ? "#EFA94A" : "#D4A574"}
-            metalness={0.6}
-            roughness={0.2}
-            emissive={isActive ? "#EFA94A" : "#8B6F47"}
-            emissiveIntensity={isActive ? 0.3 : 0.1}
+            color={card.isLegendary ? "#FFD700" : isActive ? "#EFA94A" : "#D4A574"}
+            metalness={card.isLegendary ? 0.9 : 0.6}
+            roughness={card.isLegendary ? 0.1 : 0.2}
+            emissive={card.isLegendary ? "#FFD700" : isActive ? "#EFA94A" : "#8B6F47"}
+            emissiveIntensity={card.isLegendary ? 0.5 : isActive ? 0.3 : 0.1}
           />
         </RoundedBox>
 
@@ -77,39 +84,71 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
           center
           distanceFactor={6}
           style={{
-            width: "280px",
+            width: card.isLegendary ? "320px" : "280px",
             pointerEvents: "none",
             userSelect: "none",
             opacity: isMoving && rotationProgress < 0.9 ? 0 : 1,
             transition: "opacity 0.3s ease-out",
           }}
         >
-          <div className="flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-4 transition-all duration-300">
-            {/* Image placeholder */}
-            <div 
-              className="w-40 h-24 sm:w-48 sm:h-32 rounded-lg bg-background/80 backdrop-blur-sm border border-primary/30 overflow-hidden"
-              style={{
-                backgroundImage: `url(${card.imageUrl})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
-            />
+          <div className={`flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-4 transition-all duration-300 ${card.isLegendary ? 'relative' : ''}`}>
+            {card.isLegendary && (
+              <div className="absolute -top-3 -left-3 -right-3 -bottom-3 bg-gradient-to-br from-yellow-500/20 via-amber-500/20 to-orange-500/20 rounded-xl blur-xl" />
+            )}
             
-            {/* Text content */}
-            <div className="text-center">
-              <h3 
-                className={`font-cinzel font-bold mb-0.5 sm:mb-1 transition-all duration-300 ${
-                  isActive ? "text-sm sm:text-base text-primary" : "text-xs sm:text-sm text-muted-foreground"
+            {/* Image/Video placeholder */}
+            {card.videoUrl ? (
+              <video 
+                autoPlay
+                loop
+                muted
+                playsInline
+                className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
+                  card.isLegendary ? 'w-48 h-32 sm:w-56 sm:h-36 border-primary' : 'w-40 h-24 sm:w-48 sm:h-32 border-primary/30'
                 }`}
                 style={{
-                  textShadow: isActive ? "0 0 10px rgba(239, 169, 74, 0.5)" : "none",
+                  objectFit: "cover",
+                }}
+              >
+                <source src={card.videoUrl} type="video/mp4" />
+              </video>
+            ) : (
+              <div 
+                className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
+                  card.isLegendary ? 'w-48 h-32 sm:w-56 sm:h-36 border-primary' : 'w-40 h-24 sm:w-48 sm:h-32 border-primary/30'
+                }`}
+                style={{
+                  backgroundImage: card.imageUrl ? `url(${card.imageUrl})` : 'none',
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              />
+            )}
+            
+            {/* Text content */}
+            <div className="text-center relative z-10">
+              {card.isLegendary && (
+                <div className="mb-1 font-cinzel text-[10px] sm:text-xs text-primary/80 tracking-widest uppercase">
+                  ⭐ Lendária ⭐
+                </div>
+              )}
+              <h3 
+                className={`font-cinzel font-bold mb-0.5 sm:mb-1 transition-all duration-300 ${
+                  card.isLegendary 
+                    ? "text-base sm:text-lg text-primary"
+                    : isActive ? "text-sm sm:text-base text-primary" : "text-xs sm:text-sm text-muted-foreground"
+                }`}
+                style={{
+                  textShadow: isActive || card.isLegendary ? "0 0 10px rgba(239, 169, 74, 0.5)" : "none",
                 }}
               >
                 {card.title}
               </h3>
               <p 
                 className={`font-cormorant italic transition-all duration-300 ${
-                  isActive ? "text-[11px] sm:text-xs text-foreground" : "text-[9px] sm:text-[10px] text-muted-foreground/70"
+                  card.isLegendary
+                    ? "text-xs sm:text-sm text-foreground"
+                    : isActive ? "text-[11px] sm:text-xs text-foreground" : "text-[9px] sm:text-[10px] text-muted-foreground/70"
                 }`}
               >
                 {card.description}
@@ -119,13 +158,17 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
         </Html>
       </mesh>
 
-      {/* Glow effect when active */}
-      {isActive && (
-        <RoundedBox args={[2.6, 3.1, 0.12]} radius={0.1} smoothness={4}>
+      {/* Glow effect when active or legendary */}
+      {(isActive || card.isLegendary) && (
+        <RoundedBox 
+          args={card.isLegendary ? [2.9, 3.6, 0.17] : [2.6, 3.1, 0.12]} 
+          radius={card.isLegendary ? 0.15 : 0.1} 
+          smoothness={4}
+        >
           <meshBasicMaterial
-            color="#EFA94A"
+            color={card.isLegendary ? "#FFD700" : "#EFA94A"}
             transparent
-            opacity={0.2}
+            opacity={card.isLegendary ? 0.3 : 0.2}
             wireframe
           />
         </RoundedBox>
@@ -138,9 +181,10 @@ interface Carousel3DProps {
   cards: CarouselCard[];
   activeIndex: number;
   onCardClick: (index: number) => void;
+  onStopMoving?: () => void;
 }
 
-export const Carousel3D = ({ cards, activeIndex, onCardClick }: Carousel3DProps) => {
+export const Carousel3D = ({ cards, activeIndex, onCardClick, onStopMoving }: Carousel3DProps) => {
   const groupRef = useRef<THREE.Group>(null);
   const [isMoving, setIsMoving] = useState(false);
   const previousActiveIndex = useRef(activeIndex);
@@ -149,18 +193,25 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick }: Carousel3DProps)
   const endRotation = useRef(0);
   const transitionStartTime = useRef(0);
   const transitionDuration = 800; // milliseconds
-  const { playWhooshSound } = useCarouselSound();
+  const { playWhooshSound, playStopSound } = useCarouselSound();
   const hasPlayedSound = useRef(false);
+  const hasPlayedStopSound = useRef(false);
 
   // Play sound when movement starts
   useEffect(() => {
     if (isMoving && !hasPlayedSound.current) {
       playWhooshSound();
       hasPlayedSound.current = true;
+      hasPlayedStopSound.current = false;
     } else if (!isMoving) {
       hasPlayedSound.current = false;
+      if (!hasPlayedStopSound.current && rotationProgress === 1) {
+        playStopSound();
+        hasPlayedStopSound.current = true;
+        onStopMoving?.();
+      }
     }
-  }, [isMoving, playWhooshSound]);
+  }, [isMoving, playWhooshSound, playStopSound, rotationProgress, onStopMoving]);
 
   useFrame((state) => {
     if (!groupRef.current) return;

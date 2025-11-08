@@ -6,6 +6,8 @@ import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
 import { Canvas } from "@react-three/fiber";
 import { AnimatedSphere } from "@/components/AnimatedSphere";
 import { Carousel3D } from "@/components/Carousel3D";
+import { VolumeControl } from "@/components/VolumeControl";
+import { useCarouselSound } from "@/hooks/useCarouselSound";
 type TabId = "menu" | "reservas" | "ranking";
 interface Tab {
   id: TabId;
@@ -20,6 +22,7 @@ const Menu = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const navigate = useNavigate();
+  const { volume, setVolume, isMuted, toggleMute } = useCarouselSound();
   useEffect(() => {
     setIsLoaded(true);
   }, []);
@@ -45,6 +48,12 @@ const Menu = () => {
     title: "Missão Semanal",
     description: "Complete e ganhe pontos em dobro",
     imageUrl: "https://images.unsplash.com/photo-1481833761820-0509d3217039?w=400&h=300&fit=crop"
+  }, {
+    id: 5,
+    title: "NOBLE EXPERIENCE",
+    description: "Mixologia moderna em sua essência",
+    videoUrl: "https://cdn.pixabay.com/video/2023/06/26/168959-839971011_large.mp4",
+    isLegendary: true
   }];
   const handleNextCard = () => {
     setCarouselIndex(prev => (prev + 1) % carouselCards.length);
@@ -164,9 +173,17 @@ const Menu = () => {
             </h1>
             <div className="mt-2 h-px w-24 bg-gradient-to-r from-transparent via-primary to-transparent" />
           </div>
-          <Button variant="ghost" size="icon" onClick={() => navigate("/profile")} className="absolute right-4 top-6 text-muted-foreground hover:text-primary">
-            <User className="w-5 h-5" />
-          </Button>
+          <div className="absolute right-4 top-6 flex items-center gap-2">
+            <VolumeControl 
+              volume={volume}
+              isMuted={isMuted}
+              onVolumeChange={setVolume}
+              onToggleMute={toggleMute}
+            />
+            <Button variant="ghost" size="icon" onClick={() => navigate("/profile")} className="text-muted-foreground hover:text-primary">
+              <User className="w-5 h-5" />
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -188,7 +205,11 @@ const Menu = () => {
               <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8B0000" />
               <spotLight position={[0, 10, 0]} intensity={0.8} angle={0.3} penumbra={1} />
               
-              <Carousel3D cards={carouselCards} activeIndex={carouselIndex} onCardClick={setCarouselIndex} />
+              <Carousel3D 
+                cards={carouselCards} 
+                activeIndex={carouselIndex} 
+                onCardClick={setCarouselIndex}
+              />
             </Canvas>
           </div>
         </div>
