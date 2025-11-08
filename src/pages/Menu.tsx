@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { Gem, Compass, Crown } from "lucide-react";
 import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { MeshDistortMaterial, Sphere, Html } from "@react-three/drei";
-import * as THREE from "three";
+import { Canvas } from "@react-three/fiber";
+import { AnimatedSphere } from "@/components/AnimatedSphere";
 
 type TabId = "menu" | "reservas" | "ranking";
 
@@ -15,122 +14,6 @@ interface Tab {
   position: number;
   scale: number;
 }
-
-interface AnimatedSphereProps {
-  isActive: boolean;
-  onClick: () => void;
-  position: [number, number, number];
-  scale: number;
-  color: string;
-  icon: typeof Gem;
-  name: string;
-}
-
-const AnimatedSphere = ({ isActive, onClick, position, scale, color, icon: Icon, name }: AnimatedSphereProps) => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const groupRef = useRef<THREE.Group>(null);
-  const [hovered, setHovered] = useState(false);
-
-  useFrame((state) => {
-    const time = state.clock.getElapsedTime();
-    
-    // Floating animation - continuous gentle bobbing like nautical buoys
-    if (groupRef.current) {
-      groupRef.current.position.y = Math.sin(time * 0.8 + position[0]) * 0.15;
-    }
-    
-    if (meshRef.current) {
-      // Gentle continuous rotation
-      meshRef.current.rotation.x = Math.sin(time * 0.3) * 0.1;
-      meshRef.current.rotation.z = Math.cos(time * 0.2) * 0.05;
-      
-      // Active sphere rotates 30° on Y axis smoothly
-      const targetRotationY = isActive ? Math.PI / 6 : 0; // 30° = π/6
-      meshRef.current.rotation.y += (targetRotationY - meshRef.current.rotation.y) * 0.05;
-      
-      // Scale animation
-      const targetScale = isActive ? scale * 1.2 : hovered ? scale * 1.1 : scale;
-      meshRef.current.scale.lerp(
-        new THREE.Vector3(targetScale, targetScale, targetScale),
-        0.1
-      );
-    }
-  });
-
-  // Amber crystal color - warm golden brown like aged nautical glass
-  const amberColor = isActive ? "#D4A574" : "#8B6F47";
-  const glowColor = isActive ? "#EFA94A" : "#6B5435";
-
-  return (
-    <group ref={groupRef} position={position}>
-      <mesh
-        ref={meshRef}
-        onClick={onClick}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-      >
-        {/* Main amber crystal sphere */}
-        <Sphere args={[1, 64, 64]}>
-          <MeshDistortMaterial
-            color={amberColor}
-            attach="material"
-            distort={0.15}
-            speed={1.5}
-            roughness={0.1}
-            metalness={0.3}
-            emissive={glowColor}
-            emissiveIntensity={isActive ? 0.6 : 0.15}
-            transparent
-            opacity={0.85}
-            clearcoat={1}
-            clearcoatRoughness={0.1}
-          />
-        </Sphere>
-
-        {/* Outer glow ring - light border effect when active */}
-        {isActive && (
-          <Sphere args={[1.08, 32, 32]}>
-            <meshBasicMaterial
-              color="#EFA94A"
-              transparent
-              opacity={0.25}
-              wireframe
-            />
-          </Sphere>
-        )}
-      </mesh>
-      
-      {/* Icon inside sphere - burnt gold color */}
-      <Html center distanceFactor={6}>
-        <div 
-          className="flex flex-col items-center gap-1.5 pointer-events-none transition-all duration-500"
-          style={{
-            filter: `drop-shadow(0 0 ${isActive ? '10px' : '4px'} rgba(212, 165, 116, ${isActive ? '0.9' : '0.5'}))`,
-          }}
-        >
-          <Icon 
-            className="w-7 h-7 transition-all duration-500" 
-            strokeWidth={isActive ? 2.5 : 2}
-            style={{
-              color: isActive ? "#D4A574" : "#A07855", // Burnt gold, not white or bright yellow
-            }}
-          />
-          <span 
-            className={`font-cormorant text-xs tracking-wide whitespace-nowrap transition-all duration-500 ${
-              isActive ? "font-bold" : "font-medium"
-            }`}
-            style={{
-              color: isActive ? "#EFA94A" : "#C9A577", // Intense gold when active
-              textShadow: isActive ? "0 0 12px rgba(239, 169, 74, 0.7)" : "0 0 4px rgba(201, 165, 119, 0.3)",
-            }}
-          >
-            {name}
-          </span>
-        </div>
-      </Html>
-    </group>
-  );
-};
 
 const Menu = () => {
   const [activeTab, setActiveTab] = useState<TabId>("menu");
