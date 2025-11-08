@@ -49,7 +49,7 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
         onPointerOut={() => setHovered(false)}
       >
         <RoundedBox 
-          args={[2.5, 3, 0.1]} 
+          args={[1.8, 3.2, 0.1]} 
           radius={0.1} 
           smoothness={4}
         >
@@ -67,7 +67,7 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
           center
           distanceFactor={isMobile ? 6.5 : 5.5}
           style={{
-            width: isMobile ? "220px" : "260px",
+            width: isMobile ? "160px" : "180px",
             pointerEvents: "none",
             userSelect: "none",
             opacity: isMoving ? 0 : 1,
@@ -91,8 +91,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
                   preload="auto"
                   className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
                     card.isLegendary 
-                      ? 'w-24 h-16 sm:w-32 sm:h-20 md:w-40 md:h-24 border-primary border-2' 
-                      : 'w-24 h-16 sm:w-32 sm:h-20 md:w-40 md:h-24 border-primary/30'
+                      ? 'w-28 h-48 sm:w-32 sm:h-56 md:w-36 md:h-64 border-primary border-2' 
+                      : 'w-28 h-48 sm:w-32 sm:h-56 md:w-36 md:h-64 border-primary/30'
                   }`}
                   style={{
                     objectFit: "cover",
@@ -105,8 +105,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
               <div 
                 className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
                   card.isLegendary 
-                    ? 'w-24 h-16 sm:w-32 sm:h-20 md:w-40 md:h-24 border-primary border-2' 
-                    : 'w-24 h-16 sm:w-32 sm:h-20 md:w-40 md:h-24 border-primary/30'
+                    ? 'w-28 h-48 sm:w-32 sm:h-56 md:w-36 md:h-64 border-primary border-2' 
+                    : 'w-28 h-48 sm:w-32 sm:h-56 md:w-36 md:h-64 border-primary/30'
                 }`}
                 style={{
                   backgroundImage: card.imageUrl ? `url(${card.imageUrl})` : 'none',
@@ -153,8 +153,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
       {(isActive || card.isLegendary) && (
         <RoundedBox 
           args={card.isLegendary 
-            ? [2.55, 3.05, 0.11] 
-            : [2.6, 3.1, 0.12]
+            ? [1.85, 3.25, 0.11] 
+            : [1.9, 3.3, 0.12]
           } 
           radius={0.1} 
           smoothness={4}
