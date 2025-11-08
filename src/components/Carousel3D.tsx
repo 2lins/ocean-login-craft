@@ -32,11 +32,15 @@ const Card3D = ({ position, rotation, card, isActive, onClick }: Card3DProps) =>
     }
     
     if (meshRef.current) {
-      // Scale animation
+      // Smooth scale animation with easing
       const targetScale = isActive ? 1.15 : hovered ? 1.05 : 1;
       const currentScale = meshRef.current.scale.x;
-      const newScale = currentScale + (targetScale - currentScale) * 0.1;
+      const newScale = currentScale + (targetScale - currentScale) * 0.15;
       meshRef.current.scale.set(newScale, newScale, newScale);
+      
+      // Smooth rotation for depth effect
+      const targetRotationY = rotation + (isActive ? Math.sin(time * 0.3) * 0.05 : 0);
+      meshRef.current.rotation.y += (targetRotationY - meshRef.current.rotation.y) * 0.1;
     }
   });
 
@@ -129,9 +133,10 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick }: Carousel3DProps)
 
   useFrame(() => {
     if (groupRef.current) {
-      // Smooth rotation to center the active card
+      // Smooth rotation to center the active card with easing
       const targetRotation = -(activeIndex * (Math.PI * 2)) / cards.length;
-      groupRef.current.rotation.y += (targetRotation - groupRef.current.rotation.y) * 0.05;
+      const diff = targetRotation - groupRef.current.rotation.y;
+      groupRef.current.rotation.y += diff * 0.08;
     }
   });
 

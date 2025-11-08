@@ -143,9 +143,9 @@ const Menu = () => {
       </header>
 
       {/* 3D Carousel Section */}
-      <section className="relative z-10 w-full px-4 mb-8">
+      <section className="relative z-10 w-full px-2 sm:px-4 mb-6 sm:mb-8">
         <div className={`transition-all duration-1000 delay-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
-          <div className="relative h-[380px] rounded-xl overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm">
+          <div className="relative h-[280px] sm:h-[340px] md:h-[380px] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm">
             <Canvas camera={{
               position: [0, 0, 8],
               fov: 50
@@ -161,17 +161,17 @@ const Menu = () => {
         </div>
 
         {/* Carousel navigation buttons */}
-        <div className="absolute bottom-6 left-0 right-0 flex justify-center gap-4 z-20">
-          <Button onClick={handlePrevCard} variant="outline" size="icon" className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground">
-            <ChevronLeft className="w-5 h-5" />
+        <div className="absolute bottom-4 sm:bottom-6 left-0 right-0 flex justify-center gap-3 sm:gap-4 z-20 px-2">
+          <Button onClick={handlePrevCard} variant="outline" size="icon" className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground h-8 w-8 sm:h-10 sm:w-10">
+            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
           </Button>
           
-          <div className="flex gap-2 items-center">
-            {carouselCards.map((_, index) => <button key={index} onClick={() => setCarouselIndex(index)} className={`w-2 h-2 rounded-full transition-all duration-300 ${index === carouselIndex ? "bg-primary w-6" : "bg-primary/30 hover:bg-primary/50"}`} />)}
+          <div className="flex gap-1.5 sm:gap-2 items-center">
+            {carouselCards.map((_, index) => <button key={index} onClick={() => setCarouselIndex(index)} className={`h-2 rounded-full transition-all duration-300 ${index === carouselIndex ? "bg-primary w-5 sm:w-6" : "bg-primary/30 hover:bg-primary/50 w-2"}`} />)}
           </div>
 
-          <Button onClick={handleNextCard} variant="outline" size="icon" className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground">
-            <ChevronRight className="w-5 h-5" />
+          <Button onClick={handleNextCard} variant="outline" size="icon" className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground h-8 w-8 sm:h-10 sm:w-10">
+            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
           </Button>
         </div>
       </section>
