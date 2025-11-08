@@ -1,1 +1,3 @@
-// SparkleParticles component - código será adicionado
+export const SparkleParticles = () => {
+  return null;
+};

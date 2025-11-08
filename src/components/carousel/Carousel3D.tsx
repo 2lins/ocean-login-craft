@@ -1,1 +1,3 @@
-// Carousel3D component - código será adicionado
+export const Carousel3D = () => {
+  return null;
+};

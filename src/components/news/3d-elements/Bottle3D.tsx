@@ -1,1 +1,3 @@
-// Bottle3D component - código será adicionado
+export const Bottle3D = () => {
+  return null;
+};

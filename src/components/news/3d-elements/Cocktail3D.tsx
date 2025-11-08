@@ -1,1 +1,3 @@
-// Cocktail3D component - código será adicionado
+export const Cocktail3D = () => {
+  return null;
+};

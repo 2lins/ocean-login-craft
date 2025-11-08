@@ -1,1 +1,3 @@
-// NewsSection3D component - código será adicionado
+export const NewsSection3D = () => {
+  return null;
+};

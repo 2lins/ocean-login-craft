@@ -1,1 +1,3 @@
-// Boat3D component - código será adicionado
+export const Boat3D = () => {
+  return null;
+};

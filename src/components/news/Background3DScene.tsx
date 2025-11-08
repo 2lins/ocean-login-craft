@@ -1,1 +1,3 @@
-// Background3DScene component - código será adicionado
+export const Background3DScene = () => {
+  return null;
+};
