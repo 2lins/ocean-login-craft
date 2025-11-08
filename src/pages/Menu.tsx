@@ -193,7 +193,10 @@ const Menu = () => {
             <pointLight position={[10, 10, 10]} intensity={1} />
             <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8B0000" />
             
-            {tabs.map(tab => <AnimatedSphere key={tab.id} isActive={activeTab === tab.id} onClick={() => setActiveTab(tab.id)} position={[tab.position, 0, 0]} scale={tab.scale} color={activeTab === tab.id ? "#EFA94A" : "#8B4513"} icon={tab.icon} name={tab.name} />)}
+            {tabs.map(tab => <AnimatedSphere key={tab.id} isActive={activeTab === tab.id} onClick={() => {
+              setActiveTab(tab.id);
+              if (tab.id === "ranking") navigate("/ranking");
+            }} position={[tab.position, 0, 0]} scale={tab.scale} color={activeTab === tab.id ? "#EFA94A" : "#8B4513"} icon={tab.icon} name={tab.name} />)}
           </Canvas>
         </div>
         
