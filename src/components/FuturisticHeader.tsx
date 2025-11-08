@@ -18,11 +18,9 @@ export const FuturisticHeader = () => {
   }, []);
 
   const navLinks = [
-    { name: "Home", path: "/" },
+    { name: "Home", path: "/home" },
     { name: "Cardápio", path: "/menu" },
-    { name: "Eventos", path: "/menu" },
-    { name: "Sobre", path: "/menu" },
-    { name: "Contato", path: "/menu" }
+    { name: "Ranking", path: "/ranking" }
   ];
 
   return (
