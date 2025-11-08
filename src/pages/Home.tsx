@@ -5,7 +5,7 @@ import { Environment, OrbitControls } from "@react-three/drei";
 import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Anchor } from "lucide-react";
-import { Carousel3D } from "@/components/carousel";
+import { Carousel3D } from "@/components/Carousel3D";
 import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
 import marRevolto from "@/assets/mar-revolto-bg.jpg";
 
