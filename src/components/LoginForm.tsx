@@ -19,13 +19,16 @@ const LoginForm = () => {
       return;
     }
 
+    // Set mock session
+    localStorage.setItem('session', JSON.stringify({ email, loggedIn: true }));
+    
     toast.success("Bem-vindo, explorador!", {
       description: "Prepare-se para uma experiência inesquecível",
       duration: 3000,
     });
 
     setTimeout(() => {
-      navigate("/home");
+      navigate("/app");
     }, 1000);
   };
 
