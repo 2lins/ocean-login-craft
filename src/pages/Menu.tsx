@@ -52,6 +52,34 @@ const Menu = () => {
   const handlePrevCard = () => {
     setCarouselIndex(prev => (prev - 1 + carouselCards.length) % carouselCards.length);
   };
+
+  // Touch/swipe handlers
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) {
+      handleNextCard();
+    }
+    if (isRightSwipe) {
+      handlePrevCard();
+    }
+  };
   const tabs: Tab[] = [{
     id: "reservas",
     name: "Navegar",
@@ -144,8 +172,13 @@ const Menu = () => {
 
       {/* 3D Carousel Section */}
       <section className="relative z-10 w-full px-2 sm:px-4 mb-6 sm:mb-8">
-        <div className={`transition-all duration-1000 delay-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
-          <div className="relative h-[280px] sm:h-[340px] md:h-[380px] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm">
+        <div 
+          className={`transition-all duration-1000 delay-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
+        >
+          <div className="relative h-[320px] sm:h-[340px] md:h-[380px] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm">
             <Canvas camera={{
               position: [0, 0, 8],
               fov: 50

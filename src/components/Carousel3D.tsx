@@ -88,15 +88,15 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
           center
           distanceFactor={6}
           style={{
-            width: "250px",
+            width: "280px",
             pointerEvents: "none",
             userSelect: "none",
           }}
         >
-          <div className="flex flex-col items-center gap-2 p-4 transition-all duration-300">
+          <div className="flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-4 transition-all duration-300">
             {/* Image placeholder */}
             <div 
-              className="w-48 h-32 rounded-lg bg-background/80 backdrop-blur-sm border border-primary/30 overflow-hidden"
+              className="w-40 h-24 sm:w-48 sm:h-32 rounded-lg bg-background/80 backdrop-blur-sm border border-primary/30 overflow-hidden"
               style={{
                 backgroundImage: `url(${card.imageUrl})`,
                 backgroundSize: "cover",
@@ -107,8 +107,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
             {/* Text content */}
             <div className="text-center">
               <h3 
-                className={`font-cinzel font-bold mb-1 transition-all duration-300 ${
-                  isActive ? "text-base text-primary" : "text-sm text-muted-foreground"
+                className={`font-cinzel font-bold mb-0.5 sm:mb-1 transition-all duration-300 ${
+                  isActive ? "text-sm sm:text-base text-primary" : "text-xs sm:text-sm text-muted-foreground"
                 }`}
                 style={{
                   textShadow: isActive ? "0 0 10px rgba(239, 169, 74, 0.5)" : "none",
@@ -118,7 +118,7 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
               </h3>
               <p 
                 className={`font-cormorant italic transition-all duration-300 ${
-                  isActive ? "text-xs text-foreground" : "text-[10px] text-muted-foreground/70"
+                  isActive ? "text-[11px] sm:text-xs text-foreground" : "text-[9px] sm:text-[10px] text-muted-foreground/70"
                 }`}
               >
                 {card.description}
@@ -155,18 +155,31 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick }: Carousel3DProps)
   const previousActiveIndex = useRef(activeIndex);
   const initialDiff = useRef(0);
   const [rotationProgress, setRotationProgress] = useState(0);
+  const targetRotationRef = useRef(0);
 
   useFrame(() => {
     if (groupRef.current) {
-      const targetRotation = -(activeIndex * (Math.PI * 2)) / cards.length;
-      const diff = targetRotation - groupRef.current.rotation.y;
-      
-      // Detect when activeIndex changes to start new transition
+      // Detect when activeIndex changes
       if (activeIndex !== previousActiveIndex.current) {
+        const currentRotation = groupRef.current.rotation.y;
+        const anglePerCard = (Math.PI * 2) / cards.length;
+        const targetRotation = -(activeIndex * anglePerCard);
+        
+        // Calculate shortest path
+        let diff = targetRotation - currentRotation;
+        
+        // Normalize to [-π, π] range for shortest rotation
+        while (diff > Math.PI) diff -= Math.PI * 2;
+        while (diff < -Math.PI) diff += Math.PI * 2;
+        
+        // Set new target (always go forward in the shortest direction)
+        targetRotationRef.current = currentRotation + diff;
         initialDiff.current = Math.abs(diff);
         previousActiveIndex.current = activeIndex;
         setRotationProgress(0);
       }
+      
+      const diff = targetRotationRef.current - groupRef.current.rotation.y;
       
       // Calculate normalized progress (0 to 1)
       const progress = initialDiff.current > 0 
