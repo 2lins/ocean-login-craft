@@ -81,32 +81,26 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
             
             {/* Image/Video placeholder */}
             {card.videoUrl ? (
-              <div className="relative">
-                <video 
-                  key={card.videoUrl}
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                  className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
-                    card.isLegendary 
-                      ? 'w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 border-primary border-2' 
-                      : 'w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 border-primary/30'
-                  }`}
-                  style={{
-                    objectFit: "cover",
-                  }}
-                >
-                  <source src={card.videoUrl} type="video/mp4" />
-                </video>
-              </div>
+              <video 
+                key={card.videoUrl}
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="auto"
+                className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 ${
+                  card.isLegendary ? 'border-primary border-2' : 'border-primary/30'
+                }`}
+                style={{
+                  objectFit: "cover",
+                }}
+              >
+                <source src={card.videoUrl} type="video/mp4" />
+              </video>
             ) : (
               <div 
-                className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
-                  card.isLegendary 
-                    ? 'w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 border-primary border-2' 
-                    : 'w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 border-primary/30'
+                className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 ${
+                  card.isLegendary ? 'border-primary border-2' : 'border-primary/30'
                 }`}
                 style={{
                   backgroundImage: card.imageUrl ? `url(${card.imageUrl})` : 'none',
