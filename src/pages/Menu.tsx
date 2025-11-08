@@ -1,29 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Gem, Compass, Crown, User, ChevronLeft, ChevronRight } from "lucide-react";
+import { Wine, UtensilsCrossed, Cake, ChevronLeft, ChevronRight, MapPin, Phone, Mail, Clock, Facebook, Instagram, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
 import { Canvas } from "@react-three/fiber";
-import { AnimatedSphere } from "@/components/AnimatedSphere";
 import { Carousel3D } from "@/components/Carousel3D";
-import { VolumeControl } from "@/components/VolumeControl";
-import { useCarouselSound } from "@/hooks/useCarouselSound";
 import { NewsSection3D } from "@/components/news";
-type TabId = "menu" | "reservas" | "ranking";
-interface Tab {
-  id: TabId;
-  name: string;
-  icon: typeof Gem;
-  description: string;
-  position: number;
-  scale: number;
-}
+import { FuturisticHeader } from "@/components/FuturisticHeader";
+import { ScrollIndicator } from "@/components/ScrollIndicator";
+import { MenuCategoryCard } from "@/components/MenuCategoryCard";
 const Menu = () => {
-  const [activeTab, setActiveTab] = useState<TabId>("menu");
   const [isLoaded, setIsLoaded] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
   const navigate = useNavigate();
-  const { volume, setVolume, isMuted, toggleMute } = useCarouselSound();
   useEffect(() => {
     setIsLoaded(true);
   }, []);
@@ -137,172 +125,405 @@ const Menu = () => {
     }
   ];
 
-  const tabs: Tab[] = [{
-    id: "reservas",
-    name: "Navegar",
-    icon: Compass,
-    description: "Reservas de mesa, eventos e mapa da casa",
-    position: -2.5,
-    scale: 0.8
-  }, {
-    id: "menu",
-    name: "Tesouros",
-    icon: Gem,
-    description: "Galeria dos drinks e pratos, apresentados como relíquias",
-    position: 0,
-    scale: 1.0
-  }, {
-    id: "ranking",
-    name: "Ordem",
-    icon: Crown,
-    description: "Ranking de clientes (Almirante, Comendador)",
-    position: 2.5,
-    scale: 0.8
-  }];
-  const renderContent = () => {
-    const activeTabData = tabs.find(tab => tab.id === activeTab);
-    return <div className={`flex flex-col items-center justify-center text-center px-6 transition-all duration-700 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-        <div className="relative mb-8">
-          <div className="absolute inset-0 bg-primary/20 blur-3xl rounded-full" />
-          {activeTabData && <activeTabData.icon className="relative w-24 h-24 text-primary drop-shadow-[0_0_20px_rgba(239,169,74,0.4)]" strokeWidth={1.5} />}
-        </div>
+  const menuCategories = [
+    {
+      title: "Drinks",
+      icon: Wine,
+      description: "Coquetéis autorais e clássicos"
+    },
+    {
+      title: "Pratos",
+      icon: UtensilsCrossed,
+      description: "Gastronomia contemporânea"
+    },
+    {
+      title: "Sobremesas",
+      icon: Cake,
+      description: "Doces experiências"
+    },
+    {
+      title: "Vinhos",
+      icon: Wine,
+      description: "Carta premium selecionada"
+    }
+  ];
+  return (
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-background">
+      {/* Futuristic Header */}
+      <FuturisticHeader />
+
+      {/* Hero Section - Full Screen */}
+      <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+        {/* Background placeholder - will be replaced with video/image */}
+        <div className="absolute inset-0 bg-gradient-to-br from-background via-background/95 to-primary/10" />
         
-        <h2 className="font-cinzel text-3xl md:text-4xl font-bold text-primary tracking-wider mb-4" style={{
-        textShadow: "0 0 15px rgba(239, 169, 74, 0.4)"
-      }}>
-          {activeTabData?.name}
-        </h2>
-        
-        <p className="font-cormorant text-lg md:text-xl text-muted-foreground italic max-w-md">
-          {activeTabData?.description}
-        </p>
-
-        {/* Decorative divider */}
-        <div className="mt-8 flex items-center gap-3 opacity-60">
-          <div className="h-px w-12 bg-gradient-to-r from-transparent to-primary" />
-          <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-          <div className="h-px w-12 bg-gradient-to-l from-transparent to-primary" />
-        </div>
-
-        <div className="mt-12 font-cormorant text-sm text-muted-foreground/60 italic">
-          "Cada seção é um continente a ser explorado"
-        </div>
-      </div>;
-  };
-  return <div className="relative min-h-screen w-full overflow-hidden bg-background pb-24">
-      {/* Nautical map background */}
-      <div className="fixed inset-0 opacity-10 pointer-events-none" style={{
-      backgroundImage: `
-            linear-gradient(rgba(239, 169, 74, 0.1) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(239, 169, 74, 0.1) 1px, transparent 1px),
-            radial-gradient(circle at 20% 30%, rgba(139, 0, 0, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 80% 70%, rgba(139, 0, 0, 0.1) 0%, transparent 50%)
-          `,
-      backgroundSize: '40px 40px, 40px 40px, 100% 100%, 100% 100%'
-    }} />
-
-      {/* Vignette effect */}
-      <div className="fixed inset-0 shadow-[inset_0_0_120px_rgba(0,0,0,0.9)] pointer-events-none" />
-
-      {/* Decorative compass rose watermark */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] opacity-5 pointer-events-none">
-        <Compass className="w-full h-full text-primary animate-[spin_120s_linear_infinite]" />
-      </div>
-
-      {/* Header with logo */}
-      <header className="relative z-10 pt-6 pb-4 px-4">
-        <div className={`flex items-center justify-between transition-all duration-1000 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-8"}`}>
-          <div className="flex flex-col items-center flex-1">
-            <img src={logoCais} alt="Logo Cais Nobre" className="w-20 h-20 drop-shadow-[0_0_20px_rgba(239,169,74,0.3)]" />
-            <h1 className="mt-3 font-cinzel text-xl md:text-2xl font-bold text-primary tracking-[0.3em]" style={{
-            textShadow: "0 0 15px rgba(239, 169, 74, 0.4)"
-          }}>
-              CAIS NOBRE
-            </h1>
-            <div className="mt-2 h-px w-24 bg-gradient-to-r from-transparent via-primary to-transparent" />
-          </div>
-          <div className="absolute right-4 top-6 flex items-center gap-2">
-            <VolumeControl 
-              volume={volume}
-              isMuted={isMuted}
-              onVolumeChange={setVolume}
-              onToggleMute={toggleMute}
-            />
-            <Button variant="ghost" size="icon" onClick={() => navigate("/profile")} className="text-muted-foreground hover:text-primary">
-              <User className="w-5 h-5" />
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* 3D Carousel Section */}
-      <section className="relative z-10 w-full px-2 sm:px-4 mb-6 sm:mb-8">
+        {/* Grid pattern overlay */}
         <div 
-          className={`transition-all duration-1000 delay-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
-        >
-          <div className="relative h-[450px] sm:h-[500px] md:h-[550px] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm">
-            <Canvas camera={{
-              position: [0, 0, typeof window !== 'undefined' && window.innerWidth < 640 ? 11 : 10],
-              fov: typeof window !== 'undefined' && window.innerWidth < 640 ? 45 : 40
-            }}>
-              <ambientLight intensity={0.6} />
-              <pointLight position={[10, 10, 10]} intensity={1} />
-              <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8B0000" />
-              <spotLight position={[0, 10, 0]} intensity={0.8} angle={0.3} penumbra={1} />
-              
-              <Carousel3D 
-                cards={carouselCards} 
-                activeIndex={carouselIndex} 
-                onCardClick={setCarouselIndex}
-              />
-            </Canvas>
-          </div>
+          className="absolute inset-0 opacity-10"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(242, 228, 200, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(242, 228, 200, 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '50px 50px'
+          }}
+        />
+
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black/40" />
+
+        {/* Hero Content */}
+        <div className={`relative z-10 text-center px-4 transition-all duration-1000 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+          <h1 className="font-cinzel text-5xl md:text-7xl lg:text-8xl font-bold text-primary mb-6 drop-shadow-[0_0_30px_rgba(242,228,200,0.5)]">
+            CAIS NOBRE
+          </h1>
+          <p className="font-cormorant text-xl md:text-3xl text-foreground/90 mb-12 italic">
+            Experiência Gastronômica do Futuro
+          </p>
+          <Button 
+            size="lg"
+            className="bg-primary hover:bg-primary/90 text-background font-cinzel text-lg px-8 py-6 shadow-[0_0_20px_rgba(242,228,200,0.4)] hover:shadow-[0_0_30px_rgba(242,228,200,0.6)] transition-all duration-300"
+          >
+            FAZER RESERVA
+          </Button>
         </div>
 
-        {/* Carousel navigation buttons */}
-        <div className="absolute bottom-4 sm:bottom-6 left-0 right-0 flex justify-center gap-3 sm:gap-4 z-20 px-2">
-          <Button onClick={handlePrevCard} variant="outline" size="icon" className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground h-8 w-8 sm:h-10 sm:w-10">
-            <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-          </Button>
-          
-          <div className="flex gap-1.5 sm:gap-2 items-center">
-            {carouselCards.map((_, index) => <button key={index} onClick={() => setCarouselIndex(index)} className={`h-2 rounded-full transition-all duration-300 ${index === carouselIndex ? "bg-primary w-5 sm:w-6" : "bg-primary/30 hover:bg-primary/50 w-2"}`} />)}
+        {/* Scroll Indicator */}
+        <ScrollIndicator />
+      </section>
+
+      {/* Carousel Section - Experiências Exclusivas */}
+      <section className="relative py-16 md:py-20 lg:py-24 bg-gradient-to-b from-background to-background/50">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+          {/* Section Header */}
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="font-cinzel text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-4">
+              EXPERIÊNCIAS EXCLUSIVAS
+            </h2>
+            <p className="font-cormorant text-xl md:text-2xl text-muted-foreground italic">
+              Momentos únicos que definem nossa essência
+            </p>
           </div>
 
-          <Button onClick={handleNextCard} variant="outline" size="icon" className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground h-8 w-8 sm:h-10 sm:w-10">
-            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
-          </Button>
+          {/* 3D Carousel Container */}
+          <div 
+            className="relative"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+          >
+            <div className="relative h-[450px] sm:h-[500px] md:h-[550px] rounded-xl overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm">
+              <Canvas 
+                camera={{
+                  position: [0, 0, typeof window !== 'undefined' && window.innerWidth < 640 ? 11 : 10],
+                  fov: typeof window !== 'undefined' && window.innerWidth < 640 ? 45 : 40
+                }}
+              >
+                <ambientLight intensity={0.6} />
+                <pointLight position={[10, 10, 10]} intensity={1} />
+                <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ABA18D" />
+                <spotLight position={[0, 10, 0]} intensity={0.8} angle={0.3} penumbra={1} />
+                
+                <Carousel3D 
+                  cards={carouselCards} 
+                  activeIndex={carouselIndex} 
+                  onCardClick={setCarouselIndex}
+                />
+              </Canvas>
+            </div>
+
+            {/* Carousel Navigation */}
+            <div className="absolute bottom-4 sm:bottom-6 left-0 right-0 flex justify-center gap-3 sm:gap-4 z-20 px-2">
+              <Button 
+                onClick={handlePrevCard} 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground h-8 w-8 sm:h-10 sm:w-10"
+              >
+                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+              </Button>
+              
+              <div className="flex gap-1.5 sm:gap-2 items-center">
+                {carouselCards.map((_, index) => (
+                  <button 
+                    key={index} 
+                    onClick={() => setCarouselIndex(index)} 
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      index === carouselIndex 
+                        ? "bg-primary w-5 sm:w-6" 
+                        : "bg-primary/30 hover:bg-primary/50 w-2"
+                    }`} 
+                  />
+                ))}
+              </div>
+
+              <Button 
+                onClick={handleNextCard} 
+                variant="outline" 
+                size="icon" 
+                className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground h-8 w-8 sm:h-10 sm:w-10"
+              >
+                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* News Section 3D */}
-      <NewsSection3D news={newsItems} />
+      {/* Sobre o Bar Section */}
+      <section className="relative py-16 md:py-20 lg:py-24 bg-gradient-to-b from-background/50 to-card/20">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16 items-center">
+            {/* Text Column */}
+            <div>
+              <h2 className="font-cinzel text-4xl md:text-5xl font-bold text-primary mb-6">
+                O FUTURO DA GASTRONOMIA
+              </h2>
+              <p className="font-cormorant text-lg md:text-xl text-foreground/80 mb-8 leading-relaxed">
+                No Cais Nobre, combinamos tradição e inovação para criar experiências gastronômicas únicas. 
+                Nosso conceito futurístico se harmoniza com a qualidade atemporal dos nossos ingredientes e 
+                o cuidado artesanal em cada criação.
+              </p>
 
-      {/* Bottom Navigation - Fixed Footer with 3D Spheres */}
-      <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t-2 border-primary/30">
-        {/* 3D Canvas for spheres with icons inside */}
-        <div className="h-40 w-full">
-          <Canvas camera={{
-          position: [0, 0, 8],
-          fov: 50
-        }}>
-            <ambientLight intensity={0.5} />
-            <pointLight position={[10, 10, 10]} intensity={1} />
-            <pointLight position={[-10, -10, -10]} intensity={0.5} color="#8B0000" />
-            
-            {tabs.map(tab => <AnimatedSphere key={tab.id} isActive={activeTab === tab.id} onClick={() => {
-              setActiveTab(tab.id);
-              if (tab.id === "ranking") navigate("/ranking");
-            }} position={[tab.position, 0, 0]} scale={tab.scale} color={activeTab === tab.id ? "#EFA94A" : "#8B4513"} icon={tab.icon} name={tab.name} />)}
-          </Canvas>
+              {/* Glass morphism cards */}
+              <div className="space-y-4">
+                {[
+                  { title: "Mixologia de Vanguarda", desc: "Coquetéis que desafiam os sentidos" },
+                  { title: "Gastronomia Contemporânea", desc: "Pratos que contam histórias" },
+                  { title: "Ambiente Imersivo", desc: "Tecnologia e conforto em harmonia" }
+                ].map((item, index) => (
+                  <div 
+                    key={index}
+                    className="p-6 bg-card/30 backdrop-blur-sm border border-primary/20 rounded-lg hover:border-primary/50 transition-all duration-300"
+                  >
+                    <h3 className="font-cinzel text-xl text-primary mb-2">{item.title}</h3>
+                    <p className="font-cormorant text-muted-foreground">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Image/Video Column */}
+            <div className="relative h-[400px] md:h-[500px] bg-card/30 backdrop-blur-sm border border-primary/20 rounded-lg overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent" />
+              <div className="absolute inset-0 flex items-center justify-center text-primary/30 font-cinzel text-2xl">
+                [Placeholder Imagem/Vídeo]
+              </div>
+            </div>
+          </div>
         </div>
-        
-        {/* Decorative rope border effect */}
-        <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-      </nav>
-    </div>;
+      </section>
+
+      {/* News Section */}
+      <section className="relative py-16 md:py-20 lg:py-24 bg-gradient-to-b from-card/20 to-background">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="font-cinzel text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-4">
+              ÚLTIMAS NOVIDADES
+            </h2>
+            <p className="font-cormorant text-xl md:text-2xl text-muted-foreground italic">
+              Fique por dentro dos eventos e promoções
+            </p>
+          </div>
+          
+          <NewsSection3D news={newsItems} />
+        </div>
+      </section>
+
+      {/* Menu Preview Section */}
+      <section className="relative py-16 md:py-20 lg:py-24 bg-gradient-to-b from-background to-card/20">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="font-cinzel text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-4">
+              CARDÁPIO DIGITAL
+            </h2>
+            <p className="font-cormorant text-xl md:text-2xl text-muted-foreground italic">
+              Explore nossas categorias exclusivas
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+            {menuCategories.map((category, index) => (
+              <MenuCategoryCard 
+                key={index}
+                title={category.title}
+                icon={category.icon}
+                description={category.description}
+              />
+            ))}
+          </div>
+
+          <div className="text-center">
+            <Button 
+              size="lg"
+              className="bg-primary hover:bg-primary/90 text-background font-cinzel text-lg px-8 py-6 shadow-[0_0_20px_rgba(242,228,200,0.4)] hover:shadow-[0_0_30px_rgba(242,228,200,0.6)] transition-all duration-300"
+            >
+              VER CARDÁPIO COMPLETO
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Localização/Contato Section */}
+      <section className="relative py-16 md:py-20 lg:py-24 bg-gradient-to-b from-card/20 to-background">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
+            {/* Info Column */}
+            <div className="space-y-8">
+              <div>
+                <h2 className="font-cinzel text-4xl md:text-5xl font-bold text-primary mb-6">
+                  VISITE-NOS
+                </h2>
+                <p className="font-cormorant text-lg text-foreground/80 mb-8">
+                  Estamos localizados no coração da cidade, prontos para proporcionar 
+                  uma experiência inesquecível.
+                </p>
+              </div>
+
+              <div className="space-y-6">
+                <div className="flex items-start gap-4 p-4 bg-card/30 backdrop-blur-sm border border-primary/20 rounded-lg hover:border-primary/40 transition-all duration-300">
+                  <MapPin className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-cinzel text-lg text-primary mb-1">Endereço</h3>
+                    <p className="font-cormorant text-foreground/80">
+                      Rua Exemplo, 123 - Centro<br />
+                      São Paulo, SP - 01234-567
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 bg-card/30 backdrop-blur-sm border border-primary/20 rounded-lg hover:border-primary/40 transition-all duration-300">
+                  <Clock className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-cinzel text-lg text-primary mb-1">Horário</h3>
+                    <p className="font-cormorant text-foreground/80">
+                      Terça a Sábado: 18h - 02h<br />
+                      Domingo: 18h - 00h<br />
+                      Segunda: Fechado
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 bg-card/30 backdrop-blur-sm border border-primary/20 rounded-lg hover:border-primary/40 transition-all duration-300">
+                  <Phone className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-cinzel text-lg text-primary mb-1">Telefone</h3>
+                    <p className="font-cormorant text-foreground/80">(11) 1234-5678</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-4 p-4 bg-card/30 backdrop-blur-sm border border-primary/20 rounded-lg hover:border-primary/40 transition-all duration-300">
+                  <Mail className="w-6 h-6 text-primary mt-1 flex-shrink-0" />
+                  <div>
+                    <h3 className="font-cinzel text-lg text-primary mb-1">E-mail</h3>
+                    <p className="font-cormorant text-foreground/80">contato@cairnobre.com</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Map Column */}
+            <div className="relative h-[400px] lg:h-full min-h-[500px] bg-card/30 backdrop-blur-sm border-2 border-primary/30 rounded-lg overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent" />
+              <div className="absolute inset-0 flex items-center justify-center text-primary/30 font-cinzel text-2xl">
+                [Placeholder Mapa]
+              </div>
+              
+              {/* Neon corner accents */}
+              <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-primary shadow-[0_0_10px_rgba(242,228,200,0.5)]" />
+              <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-primary shadow-[0_0_10px_rgba(242,228,200,0.5)]" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="relative bg-card/95 backdrop-blur-md border-t border-primary/30 py-12 md:py-16">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-8">
+            {/* Brand Column */}
+            <div>
+              <h3 className="font-cinzel text-2xl font-bold text-primary mb-4">CAIS NOBRE</h3>
+              <p className="font-cormorant text-foreground/70 mb-6">
+                Experiência gastronômica que une tradição e futuro em cada detalhe.
+              </p>
+              <div className="flex gap-4">
+                <a href="#" className="text-foreground/60 hover:text-primary transition-colors duration-300">
+                  <Facebook className="w-6 h-6" />
+                </a>
+                <a href="#" className="text-foreground/60 hover:text-primary transition-colors duration-300">
+                  <Instagram className="w-6 h-6" />
+                </a>
+                <a href="#" className="text-foreground/60 hover:text-primary transition-colors duration-300">
+                  <Twitter className="w-6 h-6" />
+                </a>
+              </div>
+            </div>
+
+            {/* Links Column */}
+            <div>
+              <h4 className="font-cinzel text-lg text-primary mb-4">NAVEGAÇÃO</h4>
+              <ul className="space-y-2 font-cormorant">
+                <li>
+                  <a href="#" className="text-foreground/70 hover:text-primary transition-colors duration-300">
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-foreground/70 hover:text-primary transition-colors duration-300">
+                    Cardápio
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-foreground/70 hover:text-primary transition-colors duration-300">
+                    Eventos
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-foreground/70 hover:text-primary transition-colors duration-300">
+                    Sobre
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-foreground/70 hover:text-primary transition-colors duration-300">
+                    Contato
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Contact Column */}
+            <div>
+              <h4 className="font-cinzel text-lg text-primary mb-4">CONTATO</h4>
+              <ul className="space-y-3 font-cormorant text-foreground/70">
+                <li>Rua Exemplo, 123 - Centro</li>
+                <li>São Paulo, SP</li>
+                <li>(11) 1234-5678</li>
+                <li>contato@cairnobre.com</li>
+              </ul>
+            </div>
+          </div>
+
+          {/* Bottom Bar */}
+          <div className="pt-8 border-t border-primary/20">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm font-cormorant text-foreground/60">
+              <p>&copy; 2025 Cais Nobre. Todos os direitos reservados.</p>
+              <div className="flex gap-6">
+                <a href="#" className="hover:text-primary transition-colors duration-300">
+                  Política de Privacidade
+                </a>
+                <a href="#" className="hover:text-primary transition-colors duration-300">
+                  Termos de Uso
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Decorative line */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+      </footer>
+    </div>
+  );
 };
 export default Menu;
