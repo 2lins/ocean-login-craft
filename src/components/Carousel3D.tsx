@@ -20,15 +20,11 @@ interface Card3DProps {
   isActive: boolean;
   onClick: () => void;
   isMoving: boolean;
-  rotationProgress: number;
 }
 
-const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotationProgress }: Card3DProps) => {
+const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3DProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
-  const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
-  const [videoError, setVideoError] = useState(false);
-  const [videoLoaded, setVideoLoaded] = useState(false);
 
   // Responsive sizing based on window width
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
@@ -36,34 +32,16 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
 
   useFrame(() => {
     if (meshRef.current) {
-      // Smooth scale animation
+      // Smooth scale animation only
       const targetScale = isActive ? baseScale * 1.15 : hovered ? baseScale * 1.05 : baseScale;
       const currentScale = meshRef.current.scale.x;
       const newScale = currentScale + (targetScale - currentScale) * 0.15;
       meshRef.current.scale.set(newScale, newScale, newScale);
-      
-      if (isMoving) {
-        // During movement: one complete rotation (0 to 2π)
-        const cardRotation = rotationProgress * Math.PI * 2;
-        meshRef.current.rotation.y = rotation + cardRotation;
-        
-        // Add subtle X-axis rotation for depth during transition
-        meshRef.current.rotation.x = Math.sin(cardRotation) * 0.15;
-      } else {
-        // When stopped: lock to rest position (no movement)
-        meshRef.current.rotation.y = rotation;
-        meshRef.current.rotation.x = 0;
-      }
-    }
-    
-    if (groupRef.current) {
-      // Keep position fixed
-      groupRef.current.position.set(position[0], position[1], position[2]);
     }
   });
 
   return (
-    <group ref={groupRef} position={position} rotation={[0, rotation, 0]}>
+    <group position={position} rotation={[0, rotation, 0]}>
       <mesh
         ref={meshRef}
         onClick={onClick}
@@ -95,8 +73,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
             width: card.isLegendary ? (isMobile ? "260px" : "320px") : (isMobile ? "240px" : "280px"),
             pointerEvents: "none",
             userSelect: "none",
-            opacity: isMoving && rotationProgress < 0.9 ? 0 : 1,
-            transition: "opacity 0.3s ease-out",
+            opacity: isMoving ? 0 : 1,
+            transition: "opacity 0.2s ease-out",
           }}
         >
           <div className={`flex flex-col items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 transition-all duration-300 ${card.isLegendary ? 'relative' : ''}`}>
@@ -114,14 +92,6 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
                   muted
                   playsInline
                   preload="auto"
-                  onError={(e) => {
-                    console.error('Video failed to load:', card.videoUrl);
-                    setVideoError(true);
-                  }}
-                  onLoadedData={() => {
-                    console.log('Video loaded successfully:', card.videoUrl);
-                    setVideoLoaded(true);
-                  }}
                   className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
                     card.isLegendary 
                       ? 'w-32 h-20 sm:w-48 sm:h-32 md:w-56 md:h-36 border-primary' 
@@ -133,20 +103,6 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
                 >
                   <source src={card.videoUrl} type="video/mp4" />
                 </video>
-                {!videoLoaded && !videoError && (
-                  <div className={`absolute inset-0 flex items-center justify-center rounded-lg bg-background/80 backdrop-blur-sm border ${
-                    card.isLegendary ? 'border-primary' : 'border-primary/30'
-                  }`}>
-                    <span className="text-[8px] sm:text-xs text-muted-foreground">Carregando...</span>
-                  </div>
-                )}
-                {videoError && (
-                  <div className={`absolute inset-0 flex items-center justify-center rounded-lg bg-background/80 backdrop-blur-sm border ${
-                    card.isLegendary ? 'border-primary' : 'border-primary/30'
-                  }`}>
-                    <span className="text-[8px] sm:text-xs text-destructive">Erro ao carregar</span>
-                  </div>
-                )}
               </div>
             ) : (
               <div 
@@ -221,7 +177,7 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
 // Golden Particles Component for Legendary Cards
 const GoldenParticles = ({ position }: { position: [number, number, number] }) => {
   const pointsRef = useRef<THREE.Points>(null);
-  const particleCount = 100;
+  const particleCount = 50; // Reduzido de 100 para 50
   
   const particles = useMemo(() => {
     const positions = new Float32Array(particleCount * 3);
@@ -242,8 +198,8 @@ const GoldenParticles = ({ position }: { position: [number, number, number] }) =
       
       // Golden color variations
       colors[i3] = 1.0; // R
-      colors[i3 + 1] = 0.843 + Math.random() * 0.1; // G (slight variation)
-      colors[i3 + 2] = 0.0 + Math.random() * 0.2; // B (slight variation)
+      colors[i3 + 1] = 0.843 + Math.random() * 0.1; // G
+      colors[i3 + 2] = 0.0 + Math.random() * 0.2; // B
       
       // Random sizes
       sizes[i] = Math.random() * 0.05 + 0.02;
@@ -254,23 +210,12 @@ const GoldenParticles = ({ position }: { position: [number, number, number] }) =
   
   useFrame((state) => {
     if (pointsRef.current) {
-      // Slow rotation around Y axis
-      pointsRef.current.rotation.y = state.clock.getElapsedTime() * 0.2;
+      // Slow rotation around Y axis only
+      pointsRef.current.rotation.y = state.clock.getElapsedTime() * 0.15;
       
       // Gentle pulsating effect
-      const scale = 1 + Math.sin(state.clock.getElapsedTime() * 0.5) * 0.1;
+      const scale = 1 + Math.sin(state.clock.getElapsedTime() * 0.5) * 0.08;
       pointsRef.current.scale.set(scale, scale, scale);
-      
-      // Animate individual particles (floating effect)
-      const positions = pointsRef.current.geometry.attributes.position.array as Float32Array;
-      for (let i = 0; i < particleCount; i++) {
-        const i3 = i * 3;
-        const time = state.clock.getElapsedTime();
-        
-        // Add subtle floating motion
-        positions[i3 + 1] += Math.sin(time + i) * 0.001;
-      }
-      pointsRef.current.geometry.attributes.position.needsUpdate = true;
     }
   });
   
@@ -407,7 +352,6 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick, onStopMoving }: Ca
               isActive={index === activeIndex}
               onClick={() => onCardClick(index)}
               isMoving={isMoving}
-              rotationProgress={rotationProgress}
             />
             
             {/* Add golden particles for legendary cards */}
