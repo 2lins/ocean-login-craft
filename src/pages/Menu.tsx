@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Wine, UtensilsCrossed, Cake, ChevronLeft, ChevronRight, MapPin, Phone, Mail, Clock, Facebook, Instagram, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Canvas } from "@react-three/fiber";
-import { Carousel3D } from "@/components/Carousel3D";
+import { Carousel3D, BarLighting } from "@/components/Carousel3D";
 import { NewsSection3D } from "@/components/news";
 import { FuturisticHeader } from "@/components/FuturisticHeader";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
@@ -220,17 +220,14 @@ const Menu = () => {
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
           >
-            <div className="relative h-[450px] sm:h-[500px] md:h-[550px] rounded-xl overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm">
+            <div className="relative h-[500px] sm:h-[550px] md:h-[600px] rounded-xl overflow-hidden border-2 border-primary/30 bg-gradient-to-b from-black/80 to-black/60 backdrop-blur-sm shadow-2xl shadow-yellow-900/20">
               <Canvas 
                 camera={{
-                  position: [0, 0, typeof window !== 'undefined' && window.innerWidth < 640 ? 11 : 10],
-                  fov: typeof window !== 'undefined' && window.innerWidth < 640 ? 45 : 40
+                  position: [0, typeof window !== 'undefined' && window.innerWidth < 640 ? 0.5 : 1, typeof window !== 'undefined' && window.innerWidth < 640 ? 6 : 8],
+                  fov: typeof window !== 'undefined' && window.innerWidth < 640 ? 50 : 45
                 }}
               >
-                <ambientLight intensity={0.6} />
-                <pointLight position={[10, 10, 10]} intensity={1} />
-                <pointLight position={[-10, -10, -10]} intensity={0.5} color="#ABA18D" />
-                <spotLight position={[0, 10, 0]} intensity={0.8} angle={0.3} penumbra={1} />
+                <BarLighting />
                 
                 <Carousel3D 
                   cards={carouselCards} 
@@ -240,26 +237,26 @@ const Menu = () => {
               </Canvas>
             </div>
 
-            {/* Carousel Navigation */}
-            <div className="absolute bottom-4 sm:bottom-6 left-0 right-0 flex justify-center gap-3 sm:gap-4 z-20 px-2">
+            {/* Luxury Carousel Navigation */}
+            <div className="absolute bottom-6 sm:bottom-8 left-0 right-0 flex justify-center gap-4 sm:gap-6 z-20 px-2">
               <Button 
                 onClick={handlePrevCard} 
                 variant="outline" 
                 size="icon" 
-                className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground h-8 w-8 sm:h-10 sm:w-10"
+                className="rounded-full bg-gradient-to-r from-yellow-600 to-yellow-500 border-none hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 h-10 w-10 sm:h-12 sm:w-12"
               >
-                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
               </Button>
               
-              <div className="flex gap-1.5 sm:gap-2 items-center">
+              <div className="flex gap-2 sm:gap-3 items-center">
                 {carouselCards.map((_, index) => (
                   <button 
                     key={index} 
                     onClick={() => setCarouselIndex(index)} 
-                    className={`h-2 rounded-full transition-all duration-300 ${
+                    className={`w-3 h-3 rotate-45 transition-all duration-300 ${
                       index === carouselIndex 
-                        ? "bg-primary w-5 sm:w-6" 
-                        : "bg-primary/30 hover:bg-primary/50 w-2"
+                        ? "bg-yellow-500 shadow-lg shadow-yellow-500/50" 
+                        : "bg-gray-600 hover:bg-gray-500"
                     }`} 
                   />
                 ))}
@@ -269,9 +266,9 @@ const Menu = () => {
                 onClick={handleNextCard} 
                 variant="outline" 
                 size="icon" 
-                className="rounded-full bg-card/80 backdrop-blur-sm border-primary/30 hover:bg-primary hover:text-primary-foreground h-8 w-8 sm:h-10 sm:w-10"
+                className="rounded-full bg-gradient-to-r from-yellow-600 to-yellow-500 border-none hover:shadow-lg hover:shadow-yellow-500/50 transition-all duration-300 h-10 w-10 sm:h-12 sm:w-12"
               >
-                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 text-black" />
               </Button>
             </div>
           </div>

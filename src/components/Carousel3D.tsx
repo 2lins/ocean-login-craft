@@ -15,166 +15,183 @@ interface CarouselCard {
 
 interface Card3DProps {
   position: [number, number, number];
-  rotation: number;
+  rotation: [number, number, number];
+  scale: number;
   card: CarouselCard;
   isActive: boolean;
   onClick: () => void;
   isMoving: boolean;
+  isSide: boolean;
 }
 
-const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3DProps) => {
-  const meshRef = useRef<THREE.Mesh>(null);
+const Card3D = ({ position, rotation, scale, card, isActive, onClick, isMoving, isSide }: Card3DProps) => {
+  const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
-
-  // Responsive sizing - Story format dimensions
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-  const baseScale = 0.85; // Smaller base scale for better fit
 
-  useFrame(() => {
-    if (meshRef.current) {
-      // Smooth scale animation - more emphasis on active card
-      const targetScale = isActive ? baseScale * 1.2 : hovered ? baseScale * 1.05 : baseScale;
-      const currentScale = meshRef.current.scale.x;
-      const newScale = currentScale + (targetScale - currentScale) * 0.15;
-      meshRef.current.scale.set(newScale, newScale, newScale);
+  useFrame((state) => {
+    if (groupRef.current) {
+      // Breathing effect on active card
+      if (isActive && !isMoving) {
+        const breathe = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.02;
+        groupRef.current.scale.setScalar(scale * breathe);
+      } else {
+        const targetScale = scale;
+        const currentScale = groupRef.current.scale.x;
+        const newScale = currentScale + (targetScale - currentScale) * 0.1;
+        groupRef.current.scale.setScalar(newScale);
+      }
+      
+      // Hover lift effect
+      const targetY = hovered && !isSide ? position[1] + 0.2 : position[1];
+      const currentY = groupRef.current.position.y;
+      groupRef.current.position.y = currentY + (targetY - currentY) * 0.1;
     }
   });
 
   return (
-    <group position={position} rotation={[0, rotation, 0]}>
-      <mesh
-        ref={meshRef}
-        onClick={onClick}
-        onPointerOver={() => setHovered(true)}
-        onPointerOut={() => setHovered(false)}
-      >
-        <RoundedBox 
-          args={[1.4, 2.6, 0.08]} 
-          radius={0.1} 
-          smoothness={4}
-        >
-          <meshStandardMaterial
-            color={card.isLegendary ? "#FFD700" : isActive ? "#F2E4C8" : "#ABA18D"}
-            metalness={card.isLegendary ? 0.9 : 0.6}
-            roughness={card.isLegendary ? 0.1 : 0.2}
-            emissive={card.isLegendary ? "#FFD700" : isActive ? "#F2E4C8" : "#6B6456"}
-            emissiveIntensity={card.isLegendary ? 0.5 : isActive ? 0.3 : 0.1}
-          />
-        </RoundedBox>
+    <group 
+      ref={groupRef}
+      position={position}
+      rotation={rotation}
+      onPointerOver={() => !isSide && setHovered(true)}
+      onPointerOut={() => setHovered(false)}
+      onClick={onClick}
+    >
+      {/* Main card with luxury material */}
+      <RoundedBox args={[2.5, 3.5, 0.15]} radius={0.1} smoothness={4}>
+        <meshStandardMaterial
+          color={card.isLegendary ? "#B8860B" : isActive ? "#B8860B" : "#2a2a2a"}
+          metalness={0.6}
+          roughness={0.2}
+          transparent
+          opacity={isSide ? 0.7 : 0.9}
+          envMapIntensity={1.2}
+        />
+      </RoundedBox>
 
-        {/* Card content overlay */}
-        <Html
-          center
-          distanceFactor={isMobile ? 5.8 : 4.8}
-          // ✅ CORREÇÃO: Posiciona o HTML ligeiramente à frente da carta
-          position={[0, 0, 0.041]} // Evita Z-fighting
-          style={{
-            width: isMobile ? "140px" : "160px",
-            pointerEvents: "none",
-            userSelect: "none",
-            opacity: isMoving ? 0 : 1,
-            transition: "opacity 0.2s ease-out",
-          }}
-        >
-          <div className={`flex flex-col items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 transition-all duration-300 ${card.isLegendary ? 'relative' : ''}`}>
-            {card.isLegendary && (
-              <div className="absolute -top-2 -left-2 -right-2 -bottom-2 sm:-top-3 sm:-left-3 sm:-right-3 sm:-bottom-3 bg-gradient-to-br from-yellow-500/20 via-amber-500/20 to-orange-500/20 rounded-xl blur-xl" />
-            )}
-            
-            {/* Image/Video placeholder */}
-            {card.videoUrl ? (
-              <video 
-                key={card.videoUrl}
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-                className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 ${
-                  card.isLegendary ? 'border-primary border-2' : 'border-primary/30'
-                }`}
-                style={{
-                  objectFit: "cover",
-                }}
-              >
-                <source src={card.videoUrl} type="video/mp4" />
-              </video>
-            ) : (
-              <div 
-                className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 ${
-                  card.isLegendary ? 'border-primary border-2' : 'border-primary/30'
-                }`}
-                style={{
-                  backgroundImage: card.imageUrl ? `url(${card.imageUrl})` : 'none',
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              />
-            )}
-            
-            {/* Text content */}
-            <div className="text-center relative z-10">
-              {card.isLegendary && (
-                <div className="mb-0.5 sm:mb-1 font-cinzel text-[8px] sm:text-[10px] text-primary/80 tracking-widest uppercase">
-                  ⭐ Lendária ⭐
-                </div>
-              )}
-              <h3 
-                className={`font-cinzel font-bold mb-0.5 transition-all duration-300 ${
-                  card.isLegendary 
-                    ? "text-xs sm:text-sm md:text-base text-primary font-extrabold"
-                    : isActive ? "text-xs sm:text-sm md:text-base text-primary" : "text-[10px] sm:text-xs md:text-sm text-muted-foreground"
-                }`}
-                 style={{
-                   textShadow: isActive || card.isLegendary ? "0 0 10px rgba(242, 228, 200, 0.5)" : "none",
-                 }}
-              >
-                {card.title}
-              </h3>
-              <p 
-                className={`font-cormorant italic transition-all duration-300 ${
-                  card.isLegendary
-                    ? "text-[10px] sm:text-xs md:text-sm text-foreground"
-                    : isActive ? "text-[9px] sm:text-[11px] md:text-xs text-foreground" : "text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground/70"
-                }`}
-              >
-                {card.description}
-              </p>
-            </div>
-          </div>
-        </Html>
-      </mesh>
+      {/* Golden border */}
+      <RoundedBox args={[2.52, 3.52, 0.02]} radius={0.1} smoothness={4} position={[0, 0, 0.08]}>
+        <meshBasicMaterial
+          color="#FFD700"
+          transparent
+          opacity={card.isLegendary ? 0.9 : isActive ? 0.8 : 0.3}
+        />
+      </RoundedBox>
 
-      {/* Glow effect when active or legendary */}
+      {/* Glow effect on active or legendary */}
       {(isActive || card.isLegendary) && (
-        <RoundedBox 
-          args={card.isLegendary 
-            ? [1.45, 2.65, 0.09] 
-            : [1.5, 2.7, 0.1]
-          }
-          radius={0.1} 
-          smoothness={4}
-        >
+        <RoundedBox args={[2.7, 3.7, 0.2]} radius={0.12} smoothness={4}>
           <meshBasicMaterial
-            color={card.isLegendary ? "#FFD700" : "#F2E4C8"}
+            color="#FFD700"
             transparent
-            opacity={card.isLegendary ? 0.3 : 0.2}
-            wireframe
+            opacity={0.15}
+            blending={THREE.AdditiveBlending}
           />
         </RoundedBox>
       )}
 
-      {/* ✅ CORREÇÃO: Partículas lendárias agora ficam dentro da carta */}
-      {card.isLegendary && <GoldenParticles position={[0, 0, 0]} />}
+      {/* Card content */}
+      <Html
+        center
+        distanceFactor={isMobile ? 6 : 5}
+        position={[0, 0, 0.16]}
+        style={{
+          width: isMobile ? "180px" : "220px",
+          pointerEvents: "none",
+          userSelect: "none",
+          opacity: isMoving ? 0 : isSide ? 0.6 : 1,
+          transition: "opacity 0.3s ease-out",
+        }}
+      >
+        <div className={`flex flex-col items-center gap-2 p-3 transition-all duration-300 ${card.isLegendary ? 'relative' : ''}`}>
+          {card.isLegendary && (
+            <div className="absolute -inset-4 bg-gradient-to-br from-yellow-600/20 via-amber-500/20 to-yellow-700/20 rounded-2xl blur-2xl" />
+          )}
+          
+          {/* Image/Video */}
+          {card.videoUrl ? (
+            <video 
+              key={card.videoUrl}
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              className={`rounded-lg bg-black/60 backdrop-blur-sm border overflow-hidden w-32 h-48 md:w-40 md:h-56 ${
+                card.isLegendary ? 'border-yellow-500 border-2 shadow-lg shadow-yellow-500/50' : 'border-yellow-700/40'
+              }`}
+              style={{ objectFit: "cover" }}
+            >
+              <source src={card.videoUrl} type="video/mp4" />
+            </video>
+          ) : (
+            <div 
+              className={`rounded-lg bg-black/60 backdrop-blur-sm border overflow-hidden w-32 h-48 md:w-40 md:h-56 ${
+                card.isLegendary ? 'border-yellow-500 border-2 shadow-lg shadow-yellow-500/50' : 'border-yellow-700/40'
+              }`}
+              style={{
+                backgroundImage: card.imageUrl ? `url(${card.imageUrl})` : 'none',
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+              }}
+            />
+          )}
+          
+          {/* Text content */}
+          <div className="text-center relative z-10">
+            {card.isLegendary && (
+              <div className="mb-1 font-serif text-xs text-yellow-400 tracking-widest uppercase">
+                ⭐ Lendária ⭐
+              </div>
+            )}
+            <h3 
+              className={`font-serif font-bold mb-1 transition-all duration-300 ${
+                card.isLegendary 
+                  ? "text-base md:text-lg text-yellow-400 font-extrabold"
+                  : isActive ? "text-sm md:text-base text-yellow-500" : "text-xs md:text-sm text-gray-400"
+              }`}
+              style={{
+                textShadow: isActive || card.isLegendary ? "0 0 15px rgba(184, 134, 11, 0.6)" : "none",
+              }}
+            >
+              {card.title}
+            </h3>
+            <p 
+              className={`font-serif italic transition-all duration-300 ${
+                card.isLegendary
+                  ? "text-xs md:text-sm text-gray-200"
+                  : isActive ? "text-xs text-gray-300" : "text-[10px] text-gray-500"
+              }`}
+            >
+              {card.description}
+            </p>
+          </div>
+        </div>
+      </Html>
+
+      {/* Legendary particles */}
+      {card.isLegendary && <GoldenParticles />}
+
+      {/* Floor reflection */}
+      <mesh position={[0, -4, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[2.5, 3.5]} />
+        <meshBasicMaterial
+          color="#B8860B"
+          transparent
+          opacity={isActive ? 0.15 : 0.08}
+          blending={THREE.AdditiveBlending}
+        />
+      </mesh>
     </group>
   );
 };
 
-// Golden Particles Component for Legendary Cards
-const GoldenParticles = ({ position }: { position: [number, number, number] }) => {
+// Golden Particles for Legendary Cards
+const GoldenParticles = () => {
   const pointsRef = useRef<THREE.Points>(null);
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
-  const particleCount = isMobile ? 20 : 30;
+  const particleCount = isMobile ? 25 : 40;
   
   const particles = useMemo(() => {
     const positions = new Float32Array(particleCount * 3);
@@ -184,8 +201,7 @@ const GoldenParticles = ({ position }: { position: [number, number, number] }) =
     for (let i = 0; i < particleCount; i++) {
       const i3 = i * 3;
       
-      // Random position around the card (sphere distribution)
-      const radius = 1.8 + Math.random() * 0.4; // Max 2.2
+      const radius = 1.5 + Math.random() * 0.8;
       const theta = Math.random() * Math.PI * 2;
       const phi = Math.random() * Math.PI;
       
@@ -193,31 +209,26 @@ const GoldenParticles = ({ position }: { position: [number, number, number] }) =
       positions[i3 + 1] = radius * Math.sin(phi) * Math.sin(theta);
       positions[i3 + 2] = radius * Math.cos(phi);
       
-      // Golden color variations
-      colors[i3] = 1.0; // R
-      colors[i3 + 1] = 0.843 + Math.random() * 0.1; // G
-      colors[i3 + 2] = 0.0 + Math.random() * 0.2; // B
+      colors[i3] = 1.0;
+      colors[i3 + 1] = 0.843 + Math.random() * 0.1;
+      colors[i3 + 2] = 0.0 + Math.random() * 0.2;
       
-      // Random sizes
-      sizes[i] = Math.random() * 0.03 + 0.01;
+      sizes[i] = Math.random() * 0.04 + 0.02;
     }
     
     return { positions, colors, sizes };
-  }, []);
+  }, [particleCount]);
   
   useFrame((state) => {
     if (pointsRef.current) {
-      // Slow rotation around Y axis only
-      pointsRef.current.rotation.y = state.clock.getElapsedTime() * 0.15;
-      
-      // Gentle pulsating effect
-      const scale = 1 + Math.sin(state.clock.getElapsedTime() * 0.5) * 0.08;
+      pointsRef.current.rotation.y = state.clock.getElapsedTime() * 0.2;
+      const scale = 1 + Math.sin(state.clock.getElapsedTime() * 0.8) * 0.1;
       pointsRef.current.scale.set(scale, scale, scale);
     }
   });
   
   return (
-    <points ref={pointsRef} position={position}>
+    <points ref={pointsRef}>
       <bufferGeometry>
         <bufferAttribute
           attach="attributes-position"
@@ -239,10 +250,10 @@ const GoldenParticles = ({ position }: { position: [number, number, number] }) =
         />
       </bufferGeometry>
       <pointsMaterial
-        size={0.05}
+        size={0.06}
         vertexColors
         transparent
-        opacity={0.4}
+        opacity={0.6}
         sizeAttenuation
         blending={THREE.AdditiveBlending}
         depthWrite={false}
@@ -250,6 +261,24 @@ const GoldenParticles = ({ position }: { position: [number, number, number] }) =
     </points>
   );
 };
+
+// Luxury Bar Lighting
+export const BarLighting = () => (
+  <>
+    <ambientLight intensity={0.4} />
+    <spotLight
+      position={[0, 8, 4]}
+      angle={0.3}
+      penumbra={0.5}
+      intensity={1.2}
+      color="#FFD700"
+      castShadow
+    />
+    <pointLight position={[-5, 2, 2]} intensity={0.5} color="#B8860B" />
+    <pointLight position={[5, 2, 2]} intensity={0.5} color="#B8860B" />
+    <pointLight position={[0, -2, 2]} intensity={0.3} color="#FFD700" />
+  </>
+);
 
 interface Carousel3DProps {
   cards: CarouselCard[];
@@ -262,16 +291,18 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick, onStopMoving }: Ca
   const groupRef = useRef<THREE.Group>(null);
   const [isMoving, setIsMoving] = useState(false);
   const previousActiveIndex = useRef(activeIndex);
-  const [rotationProgress, setRotationProgress] = useState(1);
-  const startRotation = useRef(0);
-  const endRotation = useRef(0);
+  const startPositions = useRef<{ [key: number]: number }>({});
+  const endPositions = useRef<{ [key: number]: number }>({});
   const transitionStartTime = useRef(0);
-  const transitionDuration = 800; // milliseconds
+  const transitionDuration = 800;
   const { playWhooshSound, playStopSound } = useCarouselSound();
   const hasPlayedSound = useRef(false);
   const hasPlayedStopSound = useRef(false);
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 
-  // Play sound when movement starts
+  // Responsive spacing
+  const spacing = isMobile ? 3.5 : 4.5;
+
   useEffect(() => {
     if (isMoving && !hasPlayedSound.current) {
       playWhooshSound();
@@ -279,92 +310,93 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick, onStopMoving }: Ca
       hasPlayedStopSound.current = false;
     } else if (!isMoving) {
       hasPlayedSound.current = false;
-      if (!hasPlayedStopSound.current && rotationProgress === 1) {
+      if (!hasPlayedStopSound.current) {
         playStopSound();
         hasPlayedStopSound.current = true;
         onStopMoving?.();
       }
     }
-  }, [isMoving, playWhooshSound, playStopSound, rotationProgress, onStopMoving]);
+  }, [isMoving, playWhooshSound, playStopSound, onStopMoving]);
 
-  useFrame((state) => {
-    if (!groupRef.current) return;
-
-    // Detect index change and start transition
+  useEffect(() => {
     if (activeIndex !== previousActiveIndex.current) {
-      const anglePerCard = (Math.PI * 2) / cards.length;
-      const currentRotation = groupRef.current.rotation.y;
-      const targetRotation = -(activeIndex * anglePerCard);
-      
-      // Normalize angles to -PI to PI range
-      const normalizeAngle = (angle: number) => {
-        while (angle > Math.PI) angle -= Math.PI * 2;
-        while (angle < -Math.PI) angle += Math.PI * 2;
-        return angle;
-      };
-      
-      const normalizedCurrent = normalizeAngle(currentRotation);
-      const normalizedTarget = normalizeAngle(targetRotation);
-      
-      // Calculate shortest path
-      let diff = normalizedTarget - normalizedCurrent;
-      if (diff > Math.PI) diff -= Math.PI * 2;
-      if (diff < -Math.PI) diff += Math.PI * 2;
-      
-      startRotation.current = normalizedCurrent;
-      endRotation.current = normalizedCurrent + diff;
-      transitionStartTime.current = state.clock.getElapsedTime() * 1000;
-      previousActiveIndex.current = activeIndex;
-      setRotationProgress(0);
-      setIsMoving(true);
-    }
+      // Calculate start and end positions for each visible card
+      const prevLeft = (previousActiveIndex.current - 1 + cards.length) % cards.length;
+      const prevRight = (previousActiveIndex.current + 1) % cards.length;
+      const newLeft = (activeIndex - 1 + cards.length) % cards.length;
+      const newRight = (activeIndex + 1) % cards.length;
 
-    // Animate transition
+      startPositions.current = {
+        [prevLeft]: -spacing,
+        [previousActiveIndex.current]: 0,
+        [prevRight]: spacing,
+      };
+
+      endPositions.current = {
+        [newLeft]: -spacing,
+        [activeIndex]: 0,
+        [newRight]: spacing,
+      };
+
+      transitionStartTime.current = Date.now();
+      setIsMoving(true);
+      previousActiveIndex.current = activeIndex;
+    }
+  }, [activeIndex, cards.length, spacing]);
+
+  useFrame(() => {
     if (isMoving) {
-      const currentTime = state.clock.getElapsedTime() * 1000;
-      const elapsed = currentTime - transitionStartTime.current;
+      const elapsed = Date.now() - transitionStartTime.current;
       const progress = Math.min(elapsed / transitionDuration, 1);
-      
-      // Easing function (ease-out cubic)
       const easedProgress = 1 - Math.pow(1 - progress, 3);
-      
-      setRotationProgress(easedProgress);
-      
-      // Interpolate rotation
-      const newRotation = startRotation.current + (endRotation.current - startRotation.current) * easedProgress;
-      groupRef.current.rotation.y = newRotation;
-      
-      // Stop when complete - ensure exact final position
+
       if (progress >= 1) {
         setIsMoving(false);
-        setRotationProgress(1);
-        // Force exact final rotation
-        const anglePerCard = (Math.PI * 2) / cards.length;
-        groupRef.current.rotation.y = -(activeIndex * anglePerCard);
       }
+
+      return easedProgress;
     }
+    return 1;
   });
+
+  // Calculate which 3 cards to show
+  const leftIndex = (activeIndex - 1 + cards.length) % cards.length;
+  const rightIndex = (activeIndex + 1) % cards.length;
+  const visibleCards = [
+    { card: cards[leftIndex], index: leftIndex, position: 'left' as const },
+    { card: cards[activeIndex], index: activeIndex, position: 'center' as const },
+    { card: cards[rightIndex], index: rightIndex, position: 'right' as const },
+  ];
 
   return (
     <group ref={groupRef}>
-      {cards.map((card, index) => {
-        const angle = (index * Math.PI * 2) / cards.length;
-        const radius = 4.5; // Increased for better spacing
-        const x = Math.sin(angle) * radius;
-        const z = Math.cos(angle) * radius;
-
-        // ✅ CORREÇÃO: Calcula a rotação para a carta olhar para o centro
-        const cardRotation = Math.atan2(-x, -z);
+      {visibleCards.map(({ card, index, position }) => {
+        const isSide = position !== 'center';
+        const isActive = index === activeIndex;
+        
+        // Position
+        const xPos = position === 'left' ? -spacing : position === 'right' ? spacing : 0;
+        const zPos = isSide ? -1 : 0;
+        
+        // Scale
+        const scale = isMobile 
+          ? (isActive ? 1.0 : 0.75) 
+          : (isActive ? 1.2 : 0.8);
+        
+        // Rotation
+        const yRotation = position === 'left' ? 0.15 : position === 'right' ? -0.15 : 0;
 
         return (
           <Card3D
             key={card.id}
-            position={[x, 0, z]}
-            rotation={cardRotation} // ✅ Agora as cartas olham para o centro
+            position={[xPos, 0, zPos]}
+            rotation={[0, yRotation, 0]}
+            scale={scale}
             card={card}
-            isActive={index === activeIndex}
+            isActive={isActive}
             onClick={() => onCardClick(index)}
             isMoving={isMoving}
+            isSide={isSide}
           />
         );
       })}
