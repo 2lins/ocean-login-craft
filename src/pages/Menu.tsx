@@ -8,6 +8,7 @@ import { AnimatedSphere } from "@/components/AnimatedSphere";
 import { Carousel3D } from "@/components/Carousel3D";
 import { VolumeControl } from "@/components/VolumeControl";
 import { useCarouselSound } from "@/hooks/useCarouselSound";
+import { NewsSection3D } from "@/components/news";
 type TabId = "menu" | "reservas" | "ranking";
 interface Tab {
   id: TabId;
@@ -89,6 +90,53 @@ const Menu = () => {
       handlePrevCard();
     }
   };
+
+  // News data
+  const newsItems = [
+    {
+      id: 1,
+      title: "Happy Hour Premium",
+      description: "De segunda a quinta, das 17h às 20h. Drinks selecionados com 30% de desconto.",
+      category: 'promocao' as const,
+      isHighlight: true
+    },
+    {
+      id: 2,
+      title: "Noite de Jazz",
+      description: "Toda sexta-feira a partir das 21h. Música ao vivo com os melhores artistas.",
+      category: 'evento' as const,
+      isHighlight: true
+    },
+    {
+      id: 3,
+      title: "Novos Coquetéis de Autor",
+      description: "Conheça nossa nova linha de drinks exclusivos criados pelo nosso mixologista.",
+      category: 'cardapio' as const,
+      isHighlight: false
+    },
+    {
+      id: 4,
+      title: "DJ Especial",
+      description: "Sábados com música eletrônica e house music.",
+      category: 'musica' as const,
+      isHighlight: false
+    },
+    {
+      id: 5,
+      title: "Menu Executivo",
+      description: "Almoço com entrada, prato principal e sobremesa.",
+      category: 'cardapio' as const,
+      isHighlight: false
+    },
+    {
+      id: 6,
+      title: "Festa Temática",
+      description: "Último sábado do mês com tema especial e open bar.",
+      category: 'evento' as const,
+      isHighlight: false
+    }
+  ];
+
   const tabs: Tab[] = [{
     id: "reservas",
     name: "Navegar",
@@ -230,10 +278,8 @@ const Menu = () => {
         </div>
       </section>
 
-      {/* Main content area */}
-      <main className="relative z-10 flex items-center justify-center min-h-[calc(100vh-280px)]">
-        {renderContent()}
-      </main>
+      {/* News Section 3D */}
+      <NewsSection3D news={newsItems} />
 
       {/* Bottom Navigation - Fixed Footer with 3D Spheres */}
       <nav className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-md border-t-2 border-primary/30">

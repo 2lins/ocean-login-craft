@@ -6,7 +6,6 @@ import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Anchor } from "lucide-react";
 import { Carousel3D } from "@/components/carousel";
-import { NewsSection3D } from "@/components/news";
 import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
 import marRevolto from "@/assets/mar-revolto-bg.jpg";
 
@@ -61,51 +60,6 @@ const Home = () => {
     }
   ];
 
-  // News data
-  const newsItems = [
-    {
-      id: 1,
-      title: "Happy Hour Premium",
-      description: "De segunda a quinta, das 17h às 20h. Drinks selecionados com 30% de desconto.",
-      category: 'promocao' as const,
-      isHighlight: true
-    },
-    {
-      id: 2,
-      title: "Noite de Jazz",
-      description: "Toda sexta-feira a partir das 21h. Música ao vivo com os melhores artistas.",
-      category: 'evento' as const,
-      isHighlight: true
-    },
-    {
-      id: 3,
-      title: "Novos Coquetéis de Autor",
-      description: "Conheça nossa nova linha de drinks exclusivos criados pelo nosso mixologista.",
-      category: 'cardapio' as const,
-      isHighlight: false
-    },
-    {
-      id: 4,
-      title: "DJ Especial",
-      description: "Sábados com música eletrônica e house music.",
-      category: 'musica' as const,
-      isHighlight: false
-    },
-    {
-      id: 5,
-      title: "Menu Executivo",
-      description: "Almoço com entrada, prato principal e sobremesa.",
-      category: 'cardapio' as const,
-      isHighlight: false
-    },
-    {
-      id: 6,
-      title: "Festa Temática",
-      description: "Último sábado do mês com tema especial e open bar.",
-      category: 'evento' as const,
-      isHighlight: false
-    }
-  ];
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-background">
@@ -206,8 +160,6 @@ const Home = () => {
           </div>
         </div>
 
-        {/* News Section 3D */}
-        <NewsSection3D news={newsItems} />
       </div>
 
       {/* Quote */}
