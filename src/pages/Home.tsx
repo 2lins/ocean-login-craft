@@ -6,7 +6,7 @@ import { Suspense } from "react";
 import { Button } from "@/components/ui/button";
 import { Anchor } from "lucide-react";
 import { Carousel3D } from "@/components/carousel";
-import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
+import logoCais from "@/assets/logo-cais-nobre-principal.png";
 import marRevolto from "@/assets/mar-revolto-bg.jpg";
 
 const Home = () => {

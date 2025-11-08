@@ -4,7 +4,7 @@ import { UserStats } from "@/components/UserStats";
 import { ProgressBar } from "@/components/ProgressBar";
 import { Button } from "@/components/ui/button";
 import { Anchor, Settings, LogOut, Trophy } from "lucide-react";
-import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
+import logoCais from "@/assets/logo-cais-nobre-principal.png";
 
 const Profile = () => {
   const [isLoaded, setIsLoaded] = useState(false);

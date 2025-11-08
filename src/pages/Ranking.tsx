@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
+import logoCais from "@/assets/logo-cais-nobre-principal.png";
 
 interface RankUser {
   id: number;

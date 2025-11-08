@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import logoCais from "@/assets/logo-cais-nobre-vermelho.png";
+import logoCais from "@/assets/logo-cais-nobre-principal.png";
 
 export const FuturisticHeader = () => {
   const [isScrolled, setIsScrolled] = useState(false);
