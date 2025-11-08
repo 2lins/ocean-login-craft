@@ -27,11 +27,16 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
   const meshRef = useRef<THREE.Mesh>(null);
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
+  const [videoError, setVideoError] = useState(false);
+  const [videoLoaded, setVideoLoaded] = useState(false);
+
+  // Responsive sizing based on window width
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
+  const baseScale = card.isLegendary ? (isMobile ? 1.1 : 1.2) : 1;
 
   useFrame(() => {
     if (meshRef.current) {
-      // Smooth scale animation - legendary cards scale more
-      const baseScale = card.isLegendary ? 1.2 : 1;
+      // Smooth scale animation
       const targetScale = isActive ? baseScale * 1.15 : hovered ? baseScale * 1.05 : baseScale;
       const currentScale = meshRef.current.scale.x;
       const newScale = currentScale + (targetScale - currentScale) * 0.15;
@@ -66,7 +71,10 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
         onPointerOut={() => setHovered(false)}
       >
         <RoundedBox 
-          args={card.isLegendary ? [2.8, 3.5, 0.15] : [2.5, 3, 0.1]} 
+          args={card.isLegendary 
+            ? (isMobile ? [2.2, 2.8, 0.15] : [2.8, 3.5, 0.15]) 
+            : [2.5, 3, 0.1]
+          } 
           radius={card.isLegendary ? 0.15 : 0.1} 
           smoothness={4}
         >
@@ -82,40 +90,70 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
         {/* Card content overlay */}
         <Html
           center
-          distanceFactor={6}
+          distanceFactor={isMobile ? 7 : 6}
           style={{
-            width: card.isLegendary ? "320px" : "280px",
+            width: card.isLegendary ? (isMobile ? "260px" : "320px") : (isMobile ? "240px" : "280px"),
             pointerEvents: "none",
             userSelect: "none",
             opacity: isMoving && rotationProgress < 0.9 ? 0 : 1,
             transition: "opacity 0.3s ease-out",
           }}
         >
-          <div className={`flex flex-col items-center gap-1.5 sm:gap-2 p-2 sm:p-4 transition-all duration-300 ${card.isLegendary ? 'relative' : ''}`}>
+          <div className={`flex flex-col items-center gap-1 sm:gap-1.5 p-1.5 sm:p-2 transition-all duration-300 ${card.isLegendary ? 'relative' : ''}`}>
             {card.isLegendary && (
-              <div className="absolute -top-3 -left-3 -right-3 -bottom-3 bg-gradient-to-br from-yellow-500/20 via-amber-500/20 to-orange-500/20 rounded-xl blur-xl" />
+              <div className="absolute -top-2 -left-2 -right-2 -bottom-2 sm:-top-3 sm:-left-3 sm:-right-3 sm:-bottom-3 bg-gradient-to-br from-yellow-500/20 via-amber-500/20 to-orange-500/20 rounded-xl blur-xl" />
             )}
             
             {/* Image/Video placeholder */}
             {card.videoUrl ? (
-              <video 
-                autoPlay
-                loop
-                muted
-                playsInline
-                className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
-                  card.isLegendary ? 'w-48 h-32 sm:w-56 sm:h-36 border-primary' : 'w-40 h-24 sm:w-48 sm:h-32 border-primary/30'
-                }`}
-                style={{
-                  objectFit: "cover",
-                }}
-              >
-                <source src={card.videoUrl} type="video/mp4" />
-              </video>
+              <div className="relative">
+                <video 
+                  key={card.videoUrl}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="auto"
+                  onError={(e) => {
+                    console.error('Video failed to load:', card.videoUrl);
+                    setVideoError(true);
+                  }}
+                  onLoadedData={() => {
+                    console.log('Video loaded successfully:', card.videoUrl);
+                    setVideoLoaded(true);
+                  }}
+                  className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
+                    card.isLegendary 
+                      ? 'w-32 h-20 sm:w-48 sm:h-32 md:w-56 md:h-36 border-primary' 
+                      : 'w-28 h-16 sm:w-40 sm:h-24 md:w-48 md:h-32 border-primary/30'
+                  }`}
+                  style={{
+                    objectFit: "cover",
+                  }}
+                >
+                  <source src={card.videoUrl} type="video/mp4" />
+                </video>
+                {!videoLoaded && !videoError && (
+                  <div className={`absolute inset-0 flex items-center justify-center rounded-lg bg-background/80 backdrop-blur-sm border ${
+                    card.isLegendary ? 'border-primary' : 'border-primary/30'
+                  }`}>
+                    <span className="text-[8px] sm:text-xs text-muted-foreground">Carregando...</span>
+                  </div>
+                )}
+                {videoError && (
+                  <div className={`absolute inset-0 flex items-center justify-center rounded-lg bg-background/80 backdrop-blur-sm border ${
+                    card.isLegendary ? 'border-primary' : 'border-primary/30'
+                  }`}>
+                    <span className="text-[8px] sm:text-xs text-destructive">Erro ao carregar</span>
+                  </div>
+                )}
+              </div>
             ) : (
               <div 
                 className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden ${
-                  card.isLegendary ? 'w-48 h-32 sm:w-56 sm:h-36 border-primary' : 'w-40 h-24 sm:w-48 sm:h-32 border-primary/30'
+                  card.isLegendary 
+                    ? 'w-32 h-20 sm:w-48 sm:h-32 md:w-56 md:h-36 border-primary' 
+                    : 'w-28 h-16 sm:w-40 sm:h-24 md:w-48 md:h-32 border-primary/30'
                 }`}
                 style={{
                   backgroundImage: card.imageUrl ? `url(${card.imageUrl})` : 'none',
@@ -128,15 +166,15 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
             {/* Text content */}
             <div className="text-center relative z-10">
               {card.isLegendary && (
-                <div className="mb-1 font-cinzel text-[10px] sm:text-xs text-primary/80 tracking-widest uppercase">
+                <div className="mb-0.5 sm:mb-1 font-cinzel text-[8px] sm:text-[10px] text-primary/80 tracking-widest uppercase">
                   ⭐ Lendária ⭐
                 </div>
               )}
               <h3 
-                className={`font-cinzel font-bold mb-0.5 sm:mb-1 transition-all duration-300 ${
+                className={`font-cinzel font-bold mb-0.5 transition-all duration-300 ${
                   card.isLegendary 
-                    ? "text-base sm:text-lg text-primary"
-                    : isActive ? "text-sm sm:text-base text-primary" : "text-xs sm:text-sm text-muted-foreground"
+                    ? "text-sm sm:text-base md:text-lg text-primary"
+                    : isActive ? "text-xs sm:text-sm md:text-base text-primary" : "text-[10px] sm:text-xs md:text-sm text-muted-foreground"
                 }`}
                 style={{
                   textShadow: isActive || card.isLegendary ? "0 0 10px rgba(239, 169, 74, 0.5)" : "none",
@@ -147,8 +185,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
               <p 
                 className={`font-cormorant italic transition-all duration-300 ${
                   card.isLegendary
-                    ? "text-xs sm:text-sm text-foreground"
-                    : isActive ? "text-[11px] sm:text-xs text-foreground" : "text-[9px] sm:text-[10px] text-muted-foreground/70"
+                    ? "text-[10px] sm:text-xs md:text-sm text-foreground"
+                    : isActive ? "text-[9px] sm:text-[11px] md:text-xs text-foreground" : "text-[8px] sm:text-[9px] md:text-[10px] text-muted-foreground/70"
                 }`}
               >
                 {card.description}
@@ -161,7 +199,10 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving, rotatio
       {/* Glow effect when active or legendary */}
       {(isActive || card.isLegendary) && (
         <RoundedBox 
-          args={card.isLegendary ? [2.9, 3.6, 0.17] : [2.6, 3.1, 0.12]} 
+          args={card.isLegendary 
+            ? (isMobile ? [2.3, 2.9, 0.17] : [2.9, 3.6, 0.17]) 
+            : [2.6, 3.1, 0.12]
+          } 
           radius={card.isLegendary ? 0.15 : 0.1} 
           smoothness={4}
         >

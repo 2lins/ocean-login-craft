@@ -52,7 +52,7 @@ const Menu = () => {
     id: 5,
     title: "NOBLE EXPERIENCE",
     description: "Mixologia moderna em sua essência",
-    videoUrl: "https://cdn.pixabay.com/video/2023/06/26/168959-839971011_large.mp4",
+    videoUrl: "/videos/noble-experience.mp4",
     isLegendary: true
   }];
   const handleNextCard = () => {
@@ -197,8 +197,8 @@ const Menu = () => {
         >
           <div className="relative h-[320px] sm:h-[340px] md:h-[380px] rounded-lg sm:rounded-xl overflow-hidden border border-primary/20 bg-card/30 backdrop-blur-sm">
             <Canvas camera={{
-              position: [0, 0, 8],
-              fov: 50
+              position: [0, 0, typeof window !== 'undefined' && window.innerWidth < 640 ? 9 : 8],
+              fov: typeof window !== 'undefined' && window.innerWidth < 640 ? 60 : 50
             }}>
               <ambientLight intensity={0.6} />
               <pointLight position={[10, 10, 10]} intensity={1} />
