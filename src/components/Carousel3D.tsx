@@ -66,6 +66,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
         <Html
           center
           distanceFactor={isMobile ? 5.8 : 4.8}
+          // ✅ CORREÇÃO: Posiciona o HTML ligeiramente à frente da carta
+          position={[0, 0, 0.041]} // Evita Z-fighting
           style={{
             width: isMobile ? "140px" : "160px",
             pointerEvents: "none",
@@ -161,6 +163,9 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
           />
         </RoundedBox>
       )}
+
+      {/* ✅ CORREÇÃO: Partículas lendárias agora ficam dentro da carta */}
+      {card.isLegendary && <GoldenParticles position={[0, 0, 0]} />}
     </group>
   );
 };
@@ -349,19 +354,15 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick, onStopMoving }: Ca
         const z = Math.cos(angle) * radius;
 
         return (
-          <group key={card.id}>
-            <Card3D
-              position={[x, 0, z]}
-              rotation={-angle}
-              card={card}
-              isActive={index === activeIndex}
-              onClick={() => onCardClick(index)}
-              isMoving={isMoving}
-            />
-            
-            {/* Add golden particles for legendary cards */}
-            {card.isLegendary && <GoldenParticles position={[x, 0, z]} />}
-          </group>
+          <Card3D
+            key={card.id}
+            position={[x, 0, z]}
+            rotation={-angle}
+            card={card}
+            isActive={index === activeIndex}
+            onClick={() => onCardClick(index)}
+            isMoving={isMoving}
+          />
         );
       })}
     </group>
