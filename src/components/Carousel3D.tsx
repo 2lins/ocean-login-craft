@@ -1,7 +1,8 @@
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useFrame } from "@react-three/fiber";
 import { Html, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
+import { useCarouselSound } from "@/hooks/useCarouselSound";
 
 interface CarouselCard {
   id: number;
@@ -148,6 +149,18 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick }: Carousel3DProps)
   const endRotation = useRef(0);
   const transitionStartTime = useRef(0);
   const transitionDuration = 800; // milliseconds
+  const { playWhooshSound } = useCarouselSound();
+  const hasPlayedSound = useRef(false);
+
+  // Play sound when movement starts
+  useEffect(() => {
+    if (isMoving && !hasPlayedSound.current) {
+      playWhooshSound();
+      hasPlayedSound.current = true;
+    } else if (!isMoving) {
+      hasPlayedSound.current = false;
+    }
+  }, [isMoving, playWhooshSound]);
 
   useFrame((state) => {
     if (!groupRef.current) return;
