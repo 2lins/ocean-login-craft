@@ -4,6 +4,11 @@ import { Html, RoundedBox } from "@react-three/drei";
 import * as THREE from "three";
 import { useCarouselSound } from "@/hooks/useCarouselSound";
 
+// Constants for uniform styling
+const MEDIA_CLASSES = "rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56";
+const LEGENDARY_BORDER = "border-primary border-2";
+const NORMAL_BORDER = "border-primary/30";
+
 interface CarouselCard {
   id: number;
   title: string;
@@ -21,6 +26,41 @@ interface Card3DProps {
   onClick: () => void;
   isMoving: boolean;
 }
+
+// Unified Media Content Component
+const MediaContent = ({ card }: { card: CarouselCard }) => {
+  const borderClass = card.isLegendary ? LEGENDARY_BORDER : NORMAL_BORDER;
+  
+  if (card.videoUrl) {
+    return (
+      <video 
+        key={card.id}
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className={`${MEDIA_CLASSES} ${borderClass}`}
+        style={{ objectFit: "cover" }}
+      >
+        <source src={card.videoUrl} type="video/mp4" />
+      </video>
+    );
+  }
+  
+  return (
+    <div 
+      key={card.id}
+      className={`${MEDIA_CLASSES} ${borderClass}`}
+      style={{
+        backgroundImage: card.imageUrl ? `url(${card.imageUrl})` : 'none',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    />
+  );
+};
 
 const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3DProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
@@ -65,7 +105,9 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
         {/* Card content overlay */}
         <Html
           center
+          transform
           distanceFactor={isMobile ? 5.8 : 4.8}
+          zIndexRange={[0, 0]}
           style={{
             width: isMobile ? "140px" : "160px",
             pointerEvents: "none",
@@ -79,37 +121,8 @@ const Card3D = ({ position, rotation, card, isActive, onClick, isMoving }: Card3
               <div className="absolute -top-2 -left-2 -right-2 -bottom-2 sm:-top-3 sm:-left-3 sm:-right-3 sm:-bottom-3 bg-gradient-to-br from-yellow-500/20 via-amber-500/20 to-orange-500/20 rounded-xl blur-xl" />
             )}
             
-            {/* Image/Video placeholder */}
-            {card.videoUrl ? (
-              <video 
-                key={card.videoUrl}
-                autoPlay
-                loop
-                muted
-                playsInline
-                preload="auto"
-                className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 ${
-                  card.isLegendary ? 'border-primary border-2' : 'border-primary/30'
-                }`}
-                style={{
-                  objectFit: "cover",
-                }}
-              >
-                <source src={card.videoUrl} type="video/mp4" />
-              </video>
-            ) : (
-              <img 
-                key={card.imageUrl}
-                src={card.imageUrl}
-                alt={card.title}
-                className={`rounded-lg bg-background/80 backdrop-blur-sm border overflow-hidden w-24 h-40 sm:w-28 sm:h-48 md:w-32 md:h-56 ${
-                  card.isLegendary ? 'border-primary border-2' : 'border-primary/30'
-                }`}
-                style={{
-                  objectFit: "cover",
-                }}
-              />
-            )}
+            {/* Unified Media Content */}
+            <MediaContent card={card} />
             
             {/* Text content */}
             <div className="text-center relative z-10">
