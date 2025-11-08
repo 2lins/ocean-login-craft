@@ -291,13 +291,23 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick, onStopMoving }: Ca
       const currentRotation = groupRef.current.rotation.y;
       const targetRotation = -(activeIndex * anglePerCard);
       
-      // Calculate shortest path
-      let diff = targetRotation - currentRotation;
-      while (diff > Math.PI) diff -= Math.PI * 2;
-      while (diff < -Math.PI) diff += Math.PI * 2;
+      // Normalize angles to -PI to PI range
+      const normalizeAngle = (angle: number) => {
+        while (angle > Math.PI) angle -= Math.PI * 2;
+        while (angle < -Math.PI) angle += Math.PI * 2;
+        return angle;
+      };
       
-      startRotation.current = currentRotation;
-      endRotation.current = currentRotation + diff;
+      const normalizedCurrent = normalizeAngle(currentRotation);
+      const normalizedTarget = normalizeAngle(targetRotation);
+      
+      // Calculate shortest path
+      let diff = normalizedTarget - normalizedCurrent;
+      if (diff > Math.PI) diff -= Math.PI * 2;
+      if (diff < -Math.PI) diff += Math.PI * 2;
+      
+      startRotation.current = normalizedCurrent;
+      endRotation.current = normalizedCurrent + diff;
       transitionStartTime.current = state.clock.getElapsedTime() * 1000;
       previousActiveIndex.current = activeIndex;
       setRotationProgress(0);
@@ -310,19 +320,22 @@ export const Carousel3D = ({ cards, activeIndex, onCardClick, onStopMoving }: Ca
       const elapsed = currentTime - transitionStartTime.current;
       const progress = Math.min(elapsed / transitionDuration, 1);
       
-      // Easing function (ease-out)
+      // Easing function (ease-out cubic)
       const easedProgress = 1 - Math.pow(1 - progress, 3);
       
       setRotationProgress(easedProgress);
       
       // Interpolate rotation
-      groupRef.current.rotation.y = startRotation.current + (endRotation.current - startRotation.current) * easedProgress;
+      const newRotation = startRotation.current + (endRotation.current - startRotation.current) * easedProgress;
+      groupRef.current.rotation.y = newRotation;
       
-      // Stop when complete
+      // Stop when complete - ensure exact final position
       if (progress >= 1) {
         setIsMoving(false);
         setRotationProgress(1);
-        groupRef.current.rotation.y = endRotation.current;
+        // Force exact final rotation
+        const anglePerCard = (Math.PI * 2) / cards.length;
+        groupRef.current.rotation.y = -(activeIndex * anglePerCard);
       }
     }
   });
