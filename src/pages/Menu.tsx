@@ -1,72 +1,52 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Wine, UtensilsCrossed, Cake, ChevronLeft, ChevronRight, MapPin, Phone, Mail, Clock, Facebook, Instagram, Twitter } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Phone, Mail, Clock, Facebook, Instagram, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Canvas } from "@react-three/fiber";
-import { Carousel3D, BarLighting } from "@/components/Carousel3D";
 import { NewsSection3D } from "@/components/news";
 import { FuturisticHeader } from "@/components/FuturisticHeader";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
 import { MenuCategoryCard } from "@/components/MenuCategoryCard";
+import { LazyCanvas } from "@/components/LazyCanvas";
+import { LazySpline } from "@/components/LazySpline";
+import { CAROUSEL_CARDS, NEWS_ITEMS, MENU_CATEGORIES } from "@/constants/menuData";
 const Menu = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [videoLoaded, setVideoLoaded] = useState(false);
   const navigate = useNavigate();
+  
   useEffect(() => {
     setIsLoaded(true);
+    // Delay video load for better initial performance
+    const timer = setTimeout(() => setVideoLoaded(true), 500);
+    return () => clearTimeout(timer);
   }, []);
 
-  // Carousel cards data
-  const carouselCards = [{
-    id: 1,
-    title: "Sunset 2024",
-    description: "onde o por do sol prestigiou milhoes de sorrisos neste verao",
-    videoUrl: "/videos/sunset-2024.mp4"
-  }, {
-    id: 2,
-    title: "Noite dos Navegadores",
-    description: "Evento exclusivo para membros",
-    imageUrl: "https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop"
-  }, {
-    id: 3,
-    title: "Nova Carta de Drinks",
-    description: "Descubra nossos coquetéis artesanais",
-    imageUrl: "https://images.unsplash.com/photo-1551024506-0bccd828d307?w=400&h=300&fit=crop"
-  }, {
-    id: 4,
-    title: "Missão Semanal",
-    description: "Complete e ganhe pontos em dobro",
-    imageUrl: "https://images.unsplash.com/photo-1481833761820-0509d3217039?w=400&h=300&fit=crop"
-  }, {
-    id: 5,
-    title: "NOBLE EXPERIENCE",
-    description: "Mixologia moderna em sua essência",
-    videoUrl: "/videos/noble-experience.mp4",
-    isLegendary: true
-  }];
-  const handleNextCard = () => {
-    setCarouselIndex(prev => (prev + 1) % carouselCards.length);
-  };
-  const handlePrevCard = () => {
-    setCarouselIndex(prev => (prev - 1 + carouselCards.length) % carouselCards.length);
-  };
+  // Memoized handlers
+  const handleNextCard = useCallback(() => {
+    setCarouselIndex(prev => (prev + 1) % CAROUSEL_CARDS.length);
+  }, []);
+  
+  const handlePrevCard = useCallback(() => {
+    setCarouselIndex(prev => (prev - 1 + CAROUSEL_CARDS.length) % CAROUSEL_CARDS.length);
+  }, []);
 
-  // Touch/swipe handlers
+  // Touch/swipe handlers with debounce
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
   const minSwipeDistance = 50;
 
-  const onTouchStart = (e: React.TouchEvent) => {
+  const onTouchStart = useCallback((e: React.TouchEvent) => {
     setTouchEnd(null);
     setTouchStart(e.targetTouches[0].clientX);
-  };
+  }, []);
 
-  const onTouchMove = (e: React.TouchEvent) => {
+  const onTouchMove = useCallback((e: React.TouchEvent) => {
     setTouchEnd(e.targetTouches[0].clientX);
-  };
+  }, []);
 
-  const onTouchEnd = () => {
+  const onTouchEnd = useCallback(() => {
     if (!touchStart || !touchEnd) return;
     const distance = touchStart - touchEnd;
     const isLeftSwipe = distance > minSwipeDistance;
@@ -77,76 +57,8 @@ const Menu = () => {
     if (isRightSwipe) {
       handlePrevCard();
     }
-  };
+  }, [touchStart, touchEnd, handleNextCard, handlePrevCard]);
 
-  // News data
-  const newsItems = [
-    {
-      id: 1,
-      title: "Happy Hour Premium",
-      description: "De segunda a quinta, das 17h às 20h. Drinks selecionados com 30% de desconto.",
-      category: 'promocao' as const,
-      isHighlight: true
-    },
-    {
-      id: 2,
-      title: "Noite de Jazz",
-      description: "Toda sexta-feira a partir das 21h. Música ao vivo com os melhores artistas.",
-      category: 'evento' as const,
-      isHighlight: true
-    },
-    {
-      id: 3,
-      title: "Novos Coquetéis de Autor",
-      description: "Conheça nossa nova linha de drinks exclusivos criados pelo nosso mixologista.",
-      category: 'cardapio' as const,
-      isHighlight: false
-    },
-    {
-      id: 4,
-      title: "DJ Especial",
-      description: "Sábados com música eletrônica e house music.",
-      category: 'musica' as const,
-      isHighlight: false
-    },
-    {
-      id: 5,
-      title: "Menu Executivo",
-      description: "Almoço com entrada, prato principal e sobremesa.",
-      category: 'cardapio' as const,
-      isHighlight: false
-    },
-    {
-      id: 6,
-      title: "Festa Temática",
-      description: "Último sábado do mês com tema especial e open bar.",
-      category: 'evento' as const,
-      isHighlight: false
-    }
-  ];
-
-  const menuCategories = [
-    {
-      title: "Drinks",
-      icon: Wine,
-      description: "Coquetéis autorais e clássicos"
-    },
-    {
-      title: "Pratos",
-      icon: UtensilsCrossed,
-      description: "Gastronomia contemporânea"
-    },
-    {
-      title: "Sobremesas",
-      icon: Cake,
-      description: "Doces experiências"
-    },
-    {
-      title: "Vinhos",
-      icon: Wine,
-      description: "Carta premium selecionada"
-    }
-  ];
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden bg-background">
       {/* Futuristic Header */}
@@ -154,16 +66,22 @@ const Menu = () => {
 
       {/* Hero Section - Full Screen */}
       <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
-        {/* Video Background */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-        >
-          <source src="/videos/hero-background.mp4" type="video/mp4" />
-        </video>
+        {/* Lazy Loaded Video Background */}
+        {videoLoaded && (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            className="absolute inset-0 w-full h-full object-cover"
+          >
+            <source src="/videos/hero-background.mp4" type="video/mp4" />
+          </video>
+        )}
+        {!videoLoaded && (
+          <div className="absolute inset-0 bg-gradient-to-br from-background to-card animate-pulse" />
+        )}
         
         {/* Grid pattern overlay */}
         <div 
@@ -220,22 +138,12 @@ const Menu = () => {
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
           >
-            <div className="relative h-[500px] sm:h-[550px] md:h-[600px] rounded-xl overflow-hidden border-2 border-primary/30 bg-gradient-to-b from-black/80 to-black/60 backdrop-blur-sm shadow-2xl shadow-yellow-900/20">
-              <Canvas 
-                camera={{
-                  position: [0, typeof window !== 'undefined' && window.innerWidth < 640 ? 0.5 : 1, typeof window !== 'undefined' && window.innerWidth < 640 ? 6 : 8],
-                  fov: typeof window !== 'undefined' && window.innerWidth < 640 ? 50 : 45
-                }}
-              >
-                <BarLighting />
-                
-                <Carousel3D 
-                  cards={carouselCards} 
-                  activeIndex={carouselIndex} 
-                  onCardClick={setCarouselIndex}
-                />
-              </Canvas>
-            </div>
+            <LazyCanvas
+              cards={CAROUSEL_CARDS}
+              activeIndex={carouselIndex}
+              onCardClick={setCarouselIndex}
+              className="relative h-[500px] sm:h-[550px] md:h-[600px] rounded-xl overflow-hidden border-2 border-primary/30 bg-gradient-to-b from-black/80 to-black/60 backdrop-blur-sm shadow-2xl shadow-yellow-900/20"
+            />
 
             {/* Luxury Carousel Navigation */}
             <div className="absolute bottom-6 sm:bottom-8 left-0 right-0 flex justify-center gap-4 sm:gap-6 z-20 px-2">
@@ -249,7 +157,7 @@ const Menu = () => {
               </Button>
               
               <div className="flex gap-2 sm:gap-3 items-center">
-                {carouselCards.map((_, index) => (
+                {CAROUSEL_CARDS.map((_, index) => (
                   <button 
                     key={index} 
                     onClick={() => setCarouselIndex(index)} 
@@ -319,18 +227,13 @@ const Menu = () => {
         </div>
       </section>
 
-      {/* News Section with Spline Background */}
+      {/* News Section with Lazy Loaded Spline Background */}
       <section className="relative py-16 md:py-20 lg:py-24 bg-gradient-to-b from-card/20 to-background overflow-hidden">
-        {/* Spline 3D Background */}
-        <div className="absolute inset-0 z-0">
-          <iframe 
-            src='https://my.spline.design/whiskeyloadinganimation-zXpGMvScRZZV036Iet3lQpQr/' 
-            frameBorder='0' 
-            width='100%' 
-            height='100%'
-            className="pointer-events-none"
-          />
-        </div>
+        {/* Lazy Loaded Spline 3D Background */}
+        <LazySpline 
+          src='https://my.spline.design/whiskeyloadinganimation-zXpGMvScRZZV036Iet3lQpQr/'
+          className="absolute inset-0 z-0"
+        />
         
         {/* Dark overlay for better text readability */}
         <div className="absolute inset-0 bg-black/60 z-[1]" />
@@ -345,7 +248,7 @@ const Menu = () => {
             </p>
           </div>
           
-          <NewsSection3D news={newsItems} />
+          <NewsSection3D news={NEWS_ITEMS} />
         </div>
       </section>
 
@@ -362,7 +265,7 @@ const Menu = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-            {menuCategories.map((category, index) => (
+            {MENU_CATEGORIES.map((category, index) => (
               <MenuCategoryCard 
                 key={index}
                 title={category.title}
