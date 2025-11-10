@@ -8,6 +8,11 @@ import { Anchor } from "lucide-react";
 import { Carousel3D } from "@/components/carousel";
 import logoCais from "@/assets/logo-cais-nobre-principal.png";
 import marRevolto from "@/assets/mar-revolto-bg.jpg";
+import luxuryBar1 from "@/assets/highlights/luxury-bar-1.jpg";
+import luxuryBar2 from "@/assets/highlights/luxury-bar-2.jpg";
+import luxuryBar3 from "@/assets/highlights/luxury-bar-3.jpg";
+import halloweenBar from "@/assets/highlights/halloween-bar.jpg";
+import sunsetCocktail from "@/assets/highlights/sunset-cocktail.jpg";
 
 const Home = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -121,42 +126,82 @@ const Home = () => {
           </Button>
         </div>
 
-        {/* 3D Carousel Section */}
+        {/* Highlights Section */}
         <div className="w-full max-w-7xl mx-auto mb-16">
           <h2 className="font-cinzel text-4xl font-bold text-center mb-8 text-primary">
             Destaques
           </h2>
-          <div className="h-96 w-full">
-            <Canvas camera={{ position: [0, 0, 8], fov: 50 }}>
-              <Suspense fallback={null}>
-                <ambientLight intensity={0.4} />
-                <directionalLight position={[10, 10, 5]} intensity={1} />
-                <Carousel3D
-                  cards={carouselCards}
-                  activeIndex={activeCarouselIndex}
-                  onCardClick={setActiveCarouselIndex}
-                />
-                <Environment preset="sunset" />
-                <OrbitControls 
-                  enableZoom={false} 
-                  enablePan={false} 
-                  enableRotate={false} 
-                />
-              </Suspense>
-            </Canvas>
+          
+          {/* Luxury Bar Images */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div className="relative group overflow-hidden rounded-lg border border-primary/30 hover:border-primary transition-all duration-300">
+              <img src={luxuryBar1} alt="Bar Luxuoso" className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
+                <h3 className="font-cinzel text-xl text-primary">Ambiente Exclusivo</h3>
+              </div>
+            </div>
+            <div className="relative group overflow-hidden rounded-lg border border-primary/30 hover:border-primary transition-all duration-300">
+              <img src={luxuryBar2} alt="Mixologia Premium" className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
+                <h3 className="font-cinzel text-xl text-primary">Mixologia de Autor</h3>
+              </div>
+            </div>
+            <div className="relative group overflow-hidden rounded-lg border border-primary/30 hover:border-primary transition-all duration-300">
+              <img src={luxuryBar3} alt="Lounge Premium" className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent flex items-end p-6">
+                <h3 className="font-cinzel text-xl text-primary">Lounge VIP</h3>
+              </div>
+            </div>
           </div>
-          <div className="flex justify-center gap-2 mt-4">
-            {carouselCards.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveCarouselIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  index === activeCarouselIndex 
-                    ? 'bg-primary w-8' 
-                    : 'bg-muted-foreground/30'
-                }`}
-              />
-            ))}
+
+          {/* Halloween Event */}
+          <div className="bg-card/30 backdrop-blur-sm border border-primary/20 rounded-lg overflow-hidden mb-12">
+            <div className="grid md:grid-cols-2 gap-6">
+              <img src={halloweenBar} alt="Halloween no Cais Nobre" className="w-full h-full object-cover" />
+              <div className="p-8 flex flex-col justify-center">
+                <h3 className="font-cinzel text-3xl text-primary mb-4">Halloween 2024</h3>
+                <p className="font-cormorant text-lg text-foreground/80 mb-6">
+                  Uma noite inesquecível de drinks temáticos, decoração assustadoramente elegante e música envolvente. 
+                  Nossos convidados aproveitaram coquetéis exclusivos criados especialmente para a data, 
+                  em um ambiente que uniu sofisticação e diversão.
+                </p>
+                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground font-cinzel w-fit">
+                  Saiba Mais
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          {/* Sunset & Ranking Carousels */}
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Sunset Cocktail */}
+            <div className="bg-card/30 backdrop-blur-sm border border-primary/20 rounded-lg overflow-hidden">
+              <img src={sunsetCocktail} alt="Sunset Cocktail" className="w-full h-48 object-cover" />
+              <div className="p-6">
+                <h3 className="font-cinzel text-2xl text-primary mb-3">Sunset Edition</h3>
+                <p className="font-cormorant text-foreground/80 mb-4">
+                  Drinks inspirados no pôr do sol, com cores vibrantes e sabores tropicais que capturam a magia do entardecer.
+                </p>
+                <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground font-cinzel">
+                  Ver Coleção
+                </Button>
+              </div>
+            </div>
+
+            {/* Ranking */}
+            <div className="bg-card/30 backdrop-blur-sm border border-primary/20 rounded-lg p-6 flex flex-col justify-center">
+              <h3 className="font-cinzel text-2xl text-primary mb-3">Ranking Exclusivo</h3>
+              <p className="font-cormorant text-foreground/80 mb-4">
+                Acompanhe os navegadores mais ativos e ganhe recompensas exclusivas. Cada visita, cada drink é um passo rumo ao topo.
+              </p>
+              <Button 
+                onClick={() => navigate("/ranking")}
+                variant="outline" 
+                className="border-primary text-primary hover:bg-primary hover:text-primary-foreground font-cinzel w-fit"
+              >
+                Saiba Mais
+              </Button>
+            </div>
           </div>
         </div>
 
