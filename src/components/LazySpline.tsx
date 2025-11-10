@@ -1,4 +1,5 @@
 import { useIntersectionObserver } from "@/hooks/useIntersectionObserver";
+import { useState, useEffect } from "react";
 
 interface LazySplineProps {
   src: string;
@@ -6,17 +7,25 @@ interface LazySplineProps {
 }
 
 export const LazySpline = ({ src, className }: LazySplineProps) => {
+  const [isMobile, setIsMobile] = useState(false);
   const { elementRef, isVisible } = useIntersectionObserver({
     threshold: 0.1,
     rootMargin: '100px',
     triggerOnce: true
   });
 
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
+
+  // Adiciona parâmetros de otimização à URL do Spline
+  const optimizedSrc = `${src}${src.includes('?') ? '&' : '?'}quality=medium&fps=30`;
+
   return (
     <div ref={elementRef} className={className}>
-      {isVisible ? (
+      {isVisible && !isMobile ? (
         <iframe 
-          src={src} 
+          src={optimizedSrc} 
           frameBorder='0' 
           width='100%' 
           height='100%'
@@ -24,9 +33,7 @@ export const LazySpline = ({ src, className }: LazySplineProps) => {
           loading="lazy"
         />
       ) : (
-        <div className="w-full h-full bg-gradient-to-br from-background/50 to-card/30 animate-pulse flex items-center justify-center">
-          <div className="text-primary/30 font-cinzel text-xl">Carregando experiência 3D...</div>
-        </div>
+        <div className="w-full h-full bg-gradient-to-b from-background to-card/50" />
       )}
     </div>
   );

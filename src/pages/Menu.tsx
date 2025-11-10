@@ -228,22 +228,22 @@ const Menu = () => {
       </section>
 
       {/* News Section with Lazy Loaded Spline Background */}
-      <section className="relative py-16 md:py-20 lg:py-24 bg-gradient-to-b from-card/20 to-background overflow-hidden">
+      <section className="relative py-16 md:py-20 lg:py-24 bg-background overflow-hidden">
         {/* Lazy Loaded Spline 3D Background */}
         <LazySpline 
           src='https://my.spline.design/whiskeyloadinganimation-zXpGMvScRZZV036Iet3lQpQr/'
-          className="absolute inset-0 z-0"
+          className="absolute inset-0 z-0 opacity-40"
         />
         
-        {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-black/60 z-[1]" />
+        {/* Simple dark overlay */}
+        <div className="absolute inset-0 bg-black/70 z-[1]" />
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
           <div className="text-center mb-12 md:mb-16">
             <h2 className="font-cinzel text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-4">
               ÚLTIMAS NOVIDADES
             </h2>
-            <p className="font-cormorant text-xl md:text-2xl text-foreground italic">
+            <p className="font-cormorant text-xl md:text-2xl text-foreground/90 italic">
               Fique por dentro dos eventos e promoções
             </p>
           </div>
