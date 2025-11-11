@@ -5,25 +5,19 @@ import { IntelligentReservation } from '../components/HappyHours/IntelligentRese
 import { HappyHourEvent } from '../types/sunset.types';
 const HappyHours: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<HappyHourEvent | null>(null);
-
-  const heroEvents = [
-    {
-      title: 'Sunset Session Premium',
-      date: '15 Nov 2025',
-      highlight: 'Especial Vinhos do Porto'
-    },
-    {
-      title: 'DJ Night Sessions',
-      date: '20 Nov 2025',
-      highlight: 'Com DJ Marcus Silva'
-    },
-    {
-      title: 'Mixology Experience',
-      date: '22 Nov 2025',
-      highlight: 'Aprenda com o Mestre'
-    }
-  ];
-
+  const heroEvents = [{
+    title: 'Sunset Session Premium',
+    date: '15 Nov 2025',
+    highlight: 'Especial Vinhos do Porto'
+  }, {
+    title: 'DJ Night Sessions',
+    date: '20 Nov 2025',
+    highlight: 'Com DJ Marcus Silva'
+  }, {
+    title: 'Mixology Experience',
+    date: '22 Nov 2025',
+    highlight: 'Aprenda com o Mestre'
+  }];
   const events: HappyHourEvent[] = [{
     id: '1',
     title: 'Sunset Session Premium',
@@ -96,47 +90,21 @@ const HappyHours: React.FC = () => {
     cocktailPairing: ['Manhattan', 'Whiskey Sour', 'Sazerac'],
     weatherDependent: false
   }];
-
   const handleReservationComplete = (data: any) => {
     console.log('Reserva completa:', data);
   };
-
-  return (
-    <div className="min-h-screen bg-background">
+  return <div className="min-h-screen bg-background">
       {/* Video Hero Section */}
-      <VideoHero 
-        videoSrc="/videos/hero-background.mp4"
-        events={heroEvents}
-      />
+      <VideoHero videoSrc="/videos/hero-background.mp4" events={heroEvents} />
 
       {/* 3D Carousel Section */}
-      <Carousel3D 
-        events={events}
-        onEventSelect={setSelectedEvent}
-      />
+      <Carousel3D events={events} onEventSelect={setSelectedEvent} />
 
       {/* Intelligent Reservation Section */}
-      <IntelligentReservation 
-        onReservationComplete={handleReservationComplete}
-      />
+      <IntelligentReservation onReservationComplete={handleReservationComplete} />
 
       {/* Newsletter CTA */}
-      <div className="bg-gradient-to-br from-gray-900 to-black py-16">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Não Perca Nenhuma Experiência
-          </h2>
-          <p className="text-gray-300 mb-8 text-lg">
-            Subscreva à nossa newsletter e receba alertas sobre novos eventos, 
-            promoções exclusivas e experiências premium
-          </p>
-          <button className="bg-gradient-to-r from-orange-500 to-pink-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-orange-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105">
-            📧 Subscrever Newsletter
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+      
+    </div>;
 };
-
 export default HappyHours;
