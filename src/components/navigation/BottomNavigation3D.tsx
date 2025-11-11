@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import styled, { keyframes } from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 
 // Animações 3D
 const floatAnimation = keyframes`
@@ -81,7 +81,7 @@ const NavItem = styled.button<{ $isActive: boolean }>`
   position: relative;
   min-width: 60px;
   
-  ${props => props.$isActive && `
+  ${props => props.$isActive && css`
     animation: ${floatAnimation} 2s ease-in-out infinite;
     background: linear-gradient(135deg, 
       rgba(255, 215, 0, 0.1) 0%,
@@ -128,7 +128,7 @@ const IconContainer = styled.div<{ $isActive: boolean }>`
     color: ${props => props.$isActive ? '#FFD700' : '#FFFFFF'};
   }
   
-  ${props => props.$isActive && `
+  ${props => props.$isActive && css`
     svg {
       filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
     }
