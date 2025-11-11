@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 interface VideoHeroProps {
   videoSrc: string;
   events: Array<{
@@ -9,75 +8,55 @@ interface VideoHeroProps {
     highlight: string;
   }>;
 }
-
-export const VideoHero: React.FC<VideoHeroProps> = ({ videoSrc, events }) => {
+export const VideoHero: React.FC<VideoHeroProps> = ({
+  videoSrc,
+  events
+}) => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [currentEventIndex, setCurrentEventIndex] = useState(0);
   const [showOverlay, setShowOverlay] = useState(true);
   const videoRef = useRef<HTMLVideoElement>(null);
   const navigate = useNavigate();
-
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentEventIndex((prev) => (prev + 1) % events.length);
+      setCurrentEventIndex(prev => (prev + 1) % events.length);
     }, 4000);
-
     return () => clearInterval(interval);
   }, [events.length]);
-
   const handleVideoLoad = () => {
     setIsVideoLoaded(true);
     setTimeout(() => setShowOverlay(false), 2000);
   };
-
   const navigateToCalendar = () => {
     navigate('/calendario');
   };
-
-  return (
-    <div className="relative h-screen w-full overflow-hidden">
+  return <div className="relative h-screen w-full overflow-hidden">
       {/* Background Video */}
-      <video
-        ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        onLoadedData={handleVideoLoad}
-      >
+      <video ref={videoRef} className="absolute inset-0 w-full h-full object-cover" autoPlay muted loop playsInline onLoadedData={handleVideoLoad}>
         <source src={videoSrc} type="video/mp4" />
       </video>
 
       {/* Video Loading Overlay */}
-      {!isVideoLoaded && (
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-orange-900 flex items-center justify-center">
+      {!isVideoLoaded && <div className="absolute inset-0 bg-gradient-to-br from-blue-900 via-purple-900 to-orange-900 flex items-center justify-center">
           <div className="text-center text-white">
             <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
             <p className="text-xl font-medium">Preparando experiência...</p>
           </div>
-        </div>
-      )}
+        </div>}
 
       {/* Dynamic Gradient Overlay */}
-      <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-1000 ${
-        showOverlay ? 'opacity-100' : 'opacity-70'
-      }`}></div>
+      <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent transition-opacity duration-1000 ${showOverlay ? 'opacity-100' : 'opacity-70'}`}></div>
 
       {/* Floating Particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {Array.from({ length: 20 }, (_, i) => (
-          <div
-            key={i}
-            className="absolute w-2 h-2 bg-white/20 rounded-full animate-pulse"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              animationDuration: `${3 + Math.random() * 2}s`
-            }}
-          ></div>
-        ))}
+        {Array.from({
+        length: 20
+      }, (_, i) => <div key={i} className="absolute w-2 h-2 bg-white/20 rounded-full animate-pulse" style={{
+        left: `${Math.random() * 100}%`,
+        top: `${Math.random() * 100}%`,
+        animationDelay: `${Math.random() * 3}s`,
+        animationDuration: `${3 + Math.random() * 2}s`
+      }}></div>)}
       </div>
 
       {/* Hero Content */}
@@ -88,7 +67,7 @@ export const VideoHero: React.FC<VideoHeroProps> = ({ videoSrc, events }) => {
             {/* Brand Animation */}
             <div className="mb-8 transform animate-fade-in-up">
               <div className="inline-block bg-white/10 backdrop-blur-lg rounded-full px-6 py-3 border border-white/20">
-                <span className="text-sm font-semibold tracking-wider">CAIS NOBRE EXPERIENCES</span>
+                
               </div>
             </div>
 
@@ -103,34 +82,15 @@ export const VideoHero: React.FC<VideoHeroProps> = ({ videoSrc, events }) => {
 
             {/* Dynamic Event Info */}
             <div className="relative h-24 mb-8 overflow-hidden">
-              {events.map((event, index) => (
-                <div
-                  key={index}
-                  className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-1000 ${
-                    index === currentEventIndex
-                      ? 'opacity-100 transform translate-y-0'
-                      : 'opacity-0 transform translate-y-8'
-                  }`}
-                >
+              {events.map((event, index) => <div key={index} className={`absolute inset-0 flex flex-col items-center justify-center transition-all duration-1000 ${index === currentEventIndex ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-8'}`}>
                   <p className="text-2xl md:text-3xl font-semibold mb-2">{event.title}</p>
                   <p className="text-lg text-orange-300">{event.date} • {event.highlight}</p>
-                </div>
-              ))}
+                </div>)}
             </div>
 
             {/* Event Indicators */}
             <div className="flex justify-center space-x-2 mb-12">
-              {events.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setCurrentEventIndex(index)}
-                  className={`w-3 h-3 rounded-full transition-all duration-500 ${
-                    index === currentEventIndex
-                      ? 'bg-orange-400 scale-150'
-                      : 'bg-white/30 hover:bg-white/50'
-                  }`}
-                ></button>
-              ))}
+              {events.map((_, index) => <button key={index} onClick={() => setCurrentEventIndex(index)} className={`w-3 h-3 rounded-full transition-all duration-500 ${index === currentEventIndex ? 'bg-orange-400 scale-150' : 'bg-white/30 hover:bg-white/50'}`}></button>)}
             </div>
           </div>
         </div>
@@ -138,10 +98,7 @@ export const VideoHero: React.FC<VideoHeroProps> = ({ videoSrc, events }) => {
         {/* Bottom Calendar Button */}
         <div className="flex-shrink-0 pb-20 px-6">
           <div className="flex justify-center">
-            <button
-              onClick={navigateToCalendar}
-              className="group relative bg-white/10 backdrop-blur-lg border-2 border-white/30 rounded-2xl px-8 py-4 text-white font-bold text-lg transition-all duration-500 hover:bg-white/20 hover:border-white/50 hover:scale-110"
-            >
+            <button onClick={navigateToCalendar} className="group relative bg-white/10 backdrop-blur-lg border-2 border-white/30 rounded-2xl px-8 py-4 text-white font-bold text-lg transition-all duration-500 hover:bg-white/20 hover:border-white/50 hover:scale-110">
               {/* Button Background Animation */}
               <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-pink-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               
@@ -172,6 +129,5 @@ export const VideoHero: React.FC<VideoHeroProps> = ({ videoSrc, events }) => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
