@@ -17,6 +17,7 @@ import AppStatus from "./pages/app/AppStatus";
 import AppPedidos from "./pages/app/AppPedidos";
 import AppConta from "./pages/app/AppConta";
 import AppScan from "./pages/app/AppScan";
+import BottomNavigation3D from "./components/navigation/BottomNavigation3D";
 
 const queryClient = new QueryClient();
 
@@ -52,6 +53,7 @@ const App = () => (
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
+        <BottomNavigation3D />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
