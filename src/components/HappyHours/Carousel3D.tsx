@@ -103,7 +103,7 @@ export const Carousel3D: React.FC<Carousel3DProps> = ({ events, onEventSelect })
     <div className="py-8 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-2">
           <div className="inline-block bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent text-lg font-semibold mb-4">
             PRÓXIMOS EVENTOS
           </div>
@@ -116,7 +116,7 @@ export const Carousel3D: React.FC<Carousel3DProps> = ({ events, onEventSelect })
         </div>
 
         {/* 3D Carousel */}
-        <div className="relative h-[500px] flex items-center justify-center" style={{ perspective: '1000px' }}>
+        <div className="relative h-[420px] flex items-center justify-center" style={{ perspective: '1000px' }}>
           <div
             ref={carouselRef}
             className="relative w-full h-full cursor-grab active:cursor-grabbing"
