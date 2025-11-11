@@ -20,11 +20,8 @@ import AppPedidos from "./pages/app/AppPedidos";
 import AppConta from "./pages/app/AppConta";
 import AppScan from "./pages/app/AppScan";
 import BottomNavigation3D from "./components/navigation/BottomNavigation3D";
-
 const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+const App = () => <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -37,7 +34,7 @@ const App = () => (
           <Route path="/cocktails" element={<Cocktails />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/ranking" element={<Ranking />} />
-          <Route path="/happy-hours" element={<HappyHours />} />
+          
           
           {/* App routes (authenticated) */}
           <Route path="/app" element={<AppGuard><AppInicio /></AppGuard>} />
@@ -60,7 +57,5 @@ const App = () => (
         <BottomNavigation3D />
       </BrowserRouter>
     </TooltipProvider>
-  </QueryClientProvider>
-);
-
+  </QueryClientProvider>;
 export default App;
