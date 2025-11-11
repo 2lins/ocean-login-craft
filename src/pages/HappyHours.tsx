@@ -1,21 +1,29 @@
-import React from 'react';
-import { SunsetHero } from '../components/HappyHours/SunsetHero';
-import { EventCarousel } from '../components/HappyHours/EventCarousel';
-import { SunsetData, HappyHourEvent } from '../types/sunset.types';
+import React, { useState } from 'react';
+import { VideoHero } from '../components/HappyHours/VideoHero';
+import { Carousel3D } from '../components/HappyHours/Carousel3D';
+import { IntelligentReservation } from '../components/HappyHours/IntelligentReservation';
+import { HappyHourEvent } from '../types/sunset.types';
 const HappyHours: React.FC = () => {
-  // Mock data - substituir por dados reais da API
-  const sunsetData: SunsetData = {
-    id: '1',
-    date: new Date(),
-    sunsetTime: '19:30',
-    sunriseTime: '07:15',
-    quality: 'spectacular',
-    weatherCondition: 'Céu limpo',
-    temperature: 24,
-    visibility: 10,
-    cloudCover: 5,
-    recommendation: 'Condições perfeitas para sunset'
-  };
+  const [selectedEvent, setSelectedEvent] = useState<HappyHourEvent | null>(null);
+
+  const heroEvents = [
+    {
+      title: 'Sunset Session Premium',
+      date: '15 Nov 2025',
+      highlight: 'Especial Vinhos do Porto'
+    },
+    {
+      title: 'DJ Night Sessions',
+      date: '20 Nov 2025',
+      highlight: 'Com DJ Marcus Silva'
+    },
+    {
+      title: 'Mixology Experience',
+      date: '22 Nov 2025',
+      highlight: 'Aprenda com o Mestre'
+    }
+  ];
+
   const events: HappyHourEvent[] = [{
     id: '1',
     title: 'Sunset Session Premium',
@@ -88,32 +96,47 @@ const HappyHours: React.FC = () => {
     cocktailPairing: ['Manhattan', 'Whiskey Sour', 'Sazerac'],
     weatherDependent: false
   }];
-  return <div className="min-h-screen bg-background">
-      {/* Header */}
-      
 
-      {/* Main Content */}
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Sunset Intelligence */}
-        <SunsetHero sunsetData={sunsetData} />
+  const handleReservationComplete = (data: any) => {
+    console.log('Reserva completa:', data);
+  };
 
-        {/* Events Carousel */}
-        <EventCarousel events={events} />
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Video Hero Section */}
+      <VideoHero 
+        videoSrc="/videos/hero-background.mp4"
+        events={heroEvents}
+      />
 
-        {/* Call to Action */}
-        <div className="mt-12 bg-gradient-to-r from-primary to-primary/80 rounded-3xl p-8 text-center">
-          <h2 className="text-3xl font-bold text-primary-foreground mb-4 font-cinzel">
+      {/* 3D Carousel Section */}
+      <Carousel3D 
+        events={events}
+        onEventSelect={setSelectedEvent}
+      />
+
+      {/* Intelligent Reservation Section */}
+      <IntelligentReservation 
+        onReservationComplete={handleReservationComplete}
+      />
+
+      {/* Newsletter CTA */}
+      <div className="bg-gradient-to-br from-gray-900 to-black py-16">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Não Perca Nenhuma Experiência
           </h2>
-          <p className="text-primary-foreground/90 mb-6 max-w-2xl mx-auto">
+          <p className="text-gray-300 mb-8 text-lg">
             Subscreva à nossa newsletter e receba alertas sobre novos eventos, 
-            promoções exclusivas e previsões de sunset premium
+            promoções exclusivas e experiências premium
           </p>
-          <button className="bg-background text-foreground px-8 py-4 rounded-full font-bold text-lg hover:bg-background/90 transition-all duration-300 transform hover:scale-105">
+          <button className="bg-gradient-to-r from-orange-500 to-pink-600 text-white px-8 py-4 rounded-full font-bold text-lg hover:from-orange-600 hover:to-pink-700 transition-all duration-300 transform hover:scale-105">
             📧 Subscrever Newsletter
           </button>
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default HappyHours;

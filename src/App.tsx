@@ -44,6 +44,7 @@ const App = () => <QueryClientProvider client={queryClient}>
           <Route path="/app/pedidos" element={<AppGuard><AppPedidos /></AppGuard>} />
           <Route path="/app/conta" element={<AppGuard><AppConta /></AppGuard>} />
           <Route path="/app/scan" element={<AppGuard><AppScan /></AppGuard>} />
+          <Route path="/happy-hours" element={<HappyHours />} />
           
           {/* Legacy redirects from /login/* to /app/* for compatibility */}
           <Route path="/login/pedidos" element={<Navigate to="/app/pedidos" replace />} />
