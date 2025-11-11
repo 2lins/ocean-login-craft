@@ -32,9 +32,12 @@ export const FuturisticHeader = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
+        <div className="grid grid-cols-3 items-center h-20">
+          {/* Spacer for layout balance */}
+          <div className="hidden md:block" />
+          
+          {/* Logo - Centered */}
+          <div className="flex items-center gap-3 cursor-pointer justify-center col-start-2" onClick={() => navigate("/")}>
             <img
               src={logoCais}
               alt="Logo"
@@ -45,22 +48,8 @@ export const FuturisticHeader = () => {
             </span>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <button
-                key={link.name}
-                onClick={() => navigate(link.path)}
-                className="relative text-foreground/80 hover:text-primary transition-colors duration-300 font-cormorant text-lg group"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all duration-300 group-hover:w-full shadow-[0_0_8px_rgba(242,228,200,0.6)]" />
-              </button>
-            ))}
-          </nav>
-
           {/* Right side buttons */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 justify-end col-start-3">
             <Button
               variant="ghost"
               size="icon"
