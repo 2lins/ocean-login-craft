@@ -63,7 +63,7 @@ export const VideoHero: React.FC<VideoHeroProps> = ({
       <div className="relative z-10 h-full flex flex-col">
         {/* Top Navigation Info */}
         <div className="flex-1 flex flex-col justify-center items-center text-white px-6">
-          <div className="text-center max-w-4xl">
+          <div className="text-center max-w-4xl mt-16 md:mt-20">
             {/* Brand Animation */}
             <div className="mb-8 transform animate-fade-in-up">
               <div className="inline-block bg-white/10 backdrop-blur-lg rounded-full px-6 py-3 border border-white/20">
