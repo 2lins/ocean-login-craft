@@ -103,7 +103,7 @@ export const Carousel3D: React.FC<Carousel3DProps> = ({ events, onEventSelect })
     <div className="py-16 bg-gradient-to-b from-gray-900 to-black overflow-hidden">
       <div className="max-w-7xl mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-8">
           <div className="inline-block bg-gradient-to-r from-orange-500 to-pink-600 bg-clip-text text-transparent text-lg font-semibold mb-4">
             PRÓXIMOS EVENTOS
           </div>
