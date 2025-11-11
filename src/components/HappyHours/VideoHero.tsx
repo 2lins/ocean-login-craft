@@ -98,23 +98,23 @@ export const VideoHero: React.FC<VideoHeroProps> = ({
         {/* Bottom Calendar Button */}
         <div className="flex-shrink-0 pb-20 px-6">
           <div className="flex justify-center">
-            <button onClick={navigateToCalendar} className="group relative bg-white/10 backdrop-blur-lg border-2 border-white/30 rounded-2xl px-8 py-4 text-white font-bold text-lg transition-all duration-500 hover:bg-white/20 hover:border-white/50 hover:scale-110">
+            <button onClick={navigateToCalendar} className="group relative bg-white/10 backdrop-blur-lg border-2 border-white/30 rounded-xl px-5 py-2.5 md:px-6 md:py-3 text-white font-bold text-sm md:text-base transition-all duration-500 hover:bg-white/20 hover:border-white/50 hover:scale-110">
               {/* Button Background Animation */}
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-pink-500/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 to-pink-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
               
               {/* Button Content */}
-              <div className="relative flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full flex items-center justify-center">
-                  <span className="text-white text-xl">📅</span>
+              <div className="relative flex items-center space-x-2 md:space-x-3">
+                <div className="w-6 h-6 md:w-7 md:h-7 bg-gradient-to-br from-orange-400 to-pink-500 rounded-full flex items-center justify-center">
+                  <span className="text-white text-base md:text-lg">📅</span>
                 </div>
                 <span>Ver Calendário</span>
-                <div className="w-6 h-6 border-2 border-current rounded-full flex items-center justify-center transform group-hover:rotate-180 transition-transform duration-500">
-                  <span className="text-sm">→</span>
+                <div className="w-5 h-5 md:w-6 md:h-6 border-2 border-current rounded-full flex items-center justify-center transform group-hover:rotate-180 transition-transform duration-500">
+                  <span className="text-xs md:text-sm">→</span>
                 </div>
               </div>
 
               {/* Pulse Effect */}
-              <div className="absolute inset-0 rounded-2xl animate-ping bg-white/20 group-hover:animate-none"></div>
+              <div className="absolute inset-0 rounded-xl animate-ping bg-white/20 group-hover:animate-none"></div>
             </button>
           </div>
         </div>
