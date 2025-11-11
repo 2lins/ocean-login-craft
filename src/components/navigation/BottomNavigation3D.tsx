@@ -200,10 +200,10 @@ const BottomNavigation3D = () => {
   const location = useLocation();
 
   const navigationItems = [
-    { path: '/home', icon: HomeIcon, label: 'Home' },
-    { path: '/menu', icon: WineIcon, label: 'Menu' },
-    { path: '/ranking', icon: TrophyIcon, label: 'Ranking' },
-    { path: '/profile', icon: ProfileIcon, label: 'Perfil' },
+    { path: '/happy-hours', icon: HomeIcon, label: 'Festa ou Happy Hour' },
+    { path: '/cocktails', icon: WineIcon, label: 'Cocktails' },
+    { path: '/profile', icon: TrophyIcon, label: 'Perfil/Conta' },
+    { path: '/partners', icon: ProfileIcon, label: 'Partners' },
   ];
 
   // Don't show on app routes or index
