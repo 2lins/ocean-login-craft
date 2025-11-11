@@ -8,6 +8,7 @@ import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import Profile from "./pages/Profile";
 import Ranking from "./pages/Ranking";
+import HappyHours from "./pages/HappyHours";
 import NotFound from "./pages/NotFound";
 import { AppGuard } from "./components/app/AppGuard";
 import AppInicio from "./pages/app/AppInicio";
@@ -34,6 +35,7 @@ const App = () => (
           <Route path="/menu" element={<Menu />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/ranking" element={<Ranking />} />
+          <Route path="/happy-hours" element={<HappyHours />} />
           
           {/* App routes (authenticated) */}
           <Route path="/app" element={<AppGuard><AppInicio /></AppGuard>} />
