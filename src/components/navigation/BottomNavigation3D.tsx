@@ -1,9 +1,8 @@
-import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Home, Wine, Trophy, Users } from 'lucide-react';
 import styled from 'styled-components';
 
-const NavContainer = styled.nav<{ $isVisible: boolean }>`
+const NavContainer = styled.nav`
   position: fixed;
   bottom: 0;
   left: 0;
@@ -13,8 +12,6 @@ const NavContainer = styled.nav<{ $isVisible: boolean }>`
   backdrop-filter: blur(20px);
   border-top: 1px solid hsl(36 85% 62% / 0.2);
   box-shadow: 0 -10px 40px hsl(36 85% 62% / 0.1);
-  transform: translateY(${props => props.$isVisible ? '0' : '100%'});
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 50;
 
   @media (min-width: 768px) {
@@ -124,8 +121,6 @@ const NavLabel = styled.span<{ $isActive: boolean }>`
 const BottomNavigation3D = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [isVisible, setIsVisible] = useState(true);
-  const [lastScrollY, setLastScrollY] = useState(0);
 
   const navigationItems = [
     { path: '/home', icon: Home, label: 'Home' },
@@ -134,40 +129,13 @@ const BottomNavigation3D = () => {
     { path: '/profile', icon: Users, label: 'Perfil' },
   ];
 
-  useEffect(() => {
-    let timeoutId: NodeJS.Timeout;
-
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      
-      clearTimeout(timeoutId);
-      
-      timeoutId = setTimeout(() => {
-        if (currentScrollY < lastScrollY || currentScrollY < 50) {
-          setIsVisible(true);
-        } else if (currentScrollY > lastScrollY && currentScrollY > 100) {
-          setIsVisible(false);
-        }
-        
-        setLastScrollY(currentScrollY);
-      }, 100);
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      clearTimeout(timeoutId);
-    };
-  }, [lastScrollY]);
-
   // Don't show on app routes or index
   if (location.pathname.startsWith('/app') || location.pathname === '/') {
     return null;
   }
 
   return (
-    <NavContainer $isVisible={isVisible}>
+    <NavContainer>
       <NavContent>
         {navigationItems.map((item) => {
           const Icon = item.icon;
