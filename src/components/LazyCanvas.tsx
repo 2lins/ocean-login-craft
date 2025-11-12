@@ -26,7 +26,7 @@ export const LazyCanvas = ({ cards, activeIndex, onCardClick, className }: LazyC
     <div ref={elementRef} className={className}>
       {shouldLoad ? (
         <Canvas
-          frameloop="never"
+          frameloop="demand"
           camera={{
             position: [0, typeof window !== 'undefined' && window.innerWidth < 640 ? 0.5 : 1, typeof window !== 'undefined' && window.innerWidth < 640 ? 6 : 8],
             fov: typeof window !== 'undefined' && window.innerWidth < 640 ? 50 : 45
