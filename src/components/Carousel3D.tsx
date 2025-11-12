@@ -29,11 +29,20 @@ const Card3D = ({ position, rotation, scale, card, isActive, onClick, isMoving, 
   const [hovered, setHovered] = useState(false);
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 
-  useFrame(() => {
+  useFrame((state) => {
     if (groupRef.current) {
-      // Simplificado: apenas aplica scale fixo
-      groupRef.current.scale.setScalar(scale);
-      groupRef.current.position.y = position[1];
+      const targetScale = scale;
+      const currentScale = groupRef.current.scale.x;
+      groupRef.current.scale.setScalar(currentScale + (targetScale - currentScale) * 0.1);
+      
+      if (isActive && !isMoving) {
+        const breathe = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.02;
+        groupRef.current.scale.setScalar(targetScale * breathe);
+      }
+      
+      const targetY = hovered && !isSide ? position[1] + 0.2 : position[1];
+      const currentY = groupRef.current.position.y;
+      groupRef.current.position.y = currentY + (targetY - currentY) * 0.1;
     }
   });
 
@@ -78,6 +87,20 @@ const Card3D = ({ position, rotation, scale, card, isActive, onClick, isMoving, 
           />
         </RoundedBox>
       )}
+
+      {/* Golden Particles for Legendary Cards */}
+      {card.isLegendary && <GoldenParticles />}
+
+      {/* Ground reflection */}
+      <RoundedBox args={[2.5, 3.5, 0.15]} radius={0.1} smoothness={4} position={[0, -3.6, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+        <meshStandardMaterial
+          color={card.isLegendary ? "#B8860B" : isActive ? "#B8860B" : "#2a2a2a"}
+          metalness={0.9}
+          roughness={0.1}
+          transparent
+          opacity={0.3}
+        />
+      </RoundedBox>
 
       {/* Card content */}
       <Html
