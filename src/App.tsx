@@ -11,6 +11,7 @@ import Ranking from "./pages/Ranking";
 import HappyHours from "./pages/HappyHours";
 import Cocktails from "./pages/Cocktails";
 import Cocktails3D from "./pages/Cocktails3D";
+import CocktailsHero from "./pages/CocktailsHero";
 import NotFound from "./pages/NotFound";
 import { AppGuard } from "./components/app/AppGuard";
 import AppInicio from "./pages/app/AppInicio";
@@ -33,6 +34,7 @@ const App = () => <QueryClientProvider client={queryClient}>
           <Route path="/home" element={<Home />} />
           <Route path="/menu" element={<Menu />} />
           <Route path="/cocktails" element={<Cocktails3D />} />
+          <Route path="/cocktails-hero" element={<CocktailsHero />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/ranking" element={<Ranking />} />
           
