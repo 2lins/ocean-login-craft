@@ -24,7 +24,7 @@ export const CAROUSEL_CARDS = [{
   id: 5,
   title: "NOBLE EXPERIENCE",
   description: "Mixologia moderna em sua essência",
-  videoUrl: "/videos/noble-experience.mp4",
+  videoUrl: "/videos/hero-background.mp4",
   isLegendary: true
 }];
 

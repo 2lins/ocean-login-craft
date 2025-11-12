@@ -22,6 +22,8 @@ const Menu = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  console.log('Menu rendering - carousel cards:', CAROUSEL_CARDS.length);
+
   // Memoized handlers
   const handleNextCard = useCallback(() => {
     setCarouselIndex(prev => (prev + 1) % CAROUSEL_CARDS.length);
@@ -60,12 +62,12 @@ const Menu = () => {
   }, [touchStart, touchEnd, handleNextCard, handlePrevCard]);
 
   return (
-    <div className="relative min-h-screen w-full overflow-x-hidden bg-background">
+    <div className="relative min-h-screen w-full overflow-x-hidden bg-background pb-24">
       {/* Futuristic Header */}
       <FuturisticHeader />
 
       {/* Hero Section - Full Screen */}
-      <section className="relative h-screen w-full flex items-center justify-center overflow-hidden">
+      <section className="relative min-h-screen w-full flex items-center justify-center overflow-hidden">
         {/* Lazy Loaded Video Background */}
         {videoLoaded && (
           <video

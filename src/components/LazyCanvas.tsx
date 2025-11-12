@@ -19,9 +19,12 @@ export const LazyCanvas = ({ cards, activeIndex, onCardClick, className }: LazyC
     triggerOnce: true
   });
 
+  // Force load immediately for debugging
+  const shouldLoad = true;
+
   return (
     <div ref={elementRef} className={className}>
-      {isVisible ? (
+      {shouldLoad ? (
         <Canvas
           frameloop="demand"
           camera={{

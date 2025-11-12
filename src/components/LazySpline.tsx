@@ -21,9 +21,12 @@ export const LazySpline = ({ src, className }: LazySplineProps) => {
   // Adiciona parâmetros de otimização à URL do Spline
   const optimizedSrc = `${src}${src.includes('?') ? '&' : '?'}quality=medium&fps=30`;
 
+  // Force load immediately for debugging
+  const shouldLoad = true;
+
   return (
     <div ref={elementRef} className={className}>
-      {isVisible && !isMobile ? (
+      {shouldLoad && !isMobile ? (
         <iframe 
           src={optimizedSrc} 
           frameBorder='0' 
