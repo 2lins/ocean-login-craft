@@ -14,18 +14,18 @@ export const CocktailsGrid3D = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-purple-900 py-16">
+    <div className="relative min-h-screen bg-background py-16">
       <div className="max-w-7xl mx-auto px-6">
         
         {/* Header */}
         <div className="text-center mb-16">
-          <h1 className="text-5xl font-bold text-white mb-4 font-cinzel">
+          <h1 className="text-5xl font-bold text-primary mb-4 font-cinzel">
             Cocktails <span className="bg-gradient-to-r from-orange-400 to-pink-600 bg-clip-text text-transparent">3D</span>
           </h1>
-          <p className="text-xl text-gray-300 max-w-2xl mx-auto font-cormorant">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-cormorant">
             Explore nossa carta de cocktails em uma experiência tridimensional única
           </p>
-          <div className="mt-8 text-gray-400 text-sm">
+          <div className="mt-8 text-muted-foreground text-sm">
             💡 Clique nos cards para ver detalhes e história de cada cocktail
           </div>
         </div>
@@ -44,7 +44,7 @@ export const CocktailsGrid3D = () => {
         {/* Footer */}
         <div className="text-center mt-16">
           <div className="inline-block glass-effect rounded-full px-6 py-3">
-            <span className="text-white font-medium">
+            <span className="text-foreground font-medium">
               🍸 {cocktailsData.length} Cocktails Disponíveis
             </span>
           </div>
