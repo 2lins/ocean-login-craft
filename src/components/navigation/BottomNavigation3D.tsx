@@ -201,7 +201,7 @@ const BottomNavigation3D = () => {
 
   const navigationItems = [
     { path: '/happy-hours', icon: HomeIcon, label: 'happy hours' },
-    { path: '/cocktails', icon: WineIcon, label: 'cocktais' },
+    { path: '/cocktails-hero', icon: WineIcon, label: 'cocktais' },
     { path: '/profile', icon: TrophyIcon, label: 'conta' },
     { path: '/menu', icon: ProfileIcon, label: 'menu' },
   ];
