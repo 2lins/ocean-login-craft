@@ -6,7 +6,6 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
-import MenuSimple from "./pages/MenuSimple";
 import Profile from "./pages/Profile";
 import Ranking from "./pages/Ranking";
 import HappyHours from "./pages/HappyHours";
