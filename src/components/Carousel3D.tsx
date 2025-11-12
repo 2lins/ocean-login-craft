@@ -29,23 +29,11 @@ const Card3D = ({ position, rotation, scale, card, isActive, onClick, isMoving, 
   const [hovered, setHovered] = useState(false);
   const isMobile = typeof window !== 'undefined' && window.innerWidth < 640;
 
-  useFrame((state) => {
+  useFrame(() => {
     if (groupRef.current) {
-      // Breathing effect on active card
-      if (isActive && !isMoving) {
-        const breathe = 1 + Math.sin(state.clock.elapsedTime * 2) * 0.02;
-        groupRef.current.scale.setScalar(scale * breathe);
-      } else {
-        const targetScale = scale;
-        const currentScale = groupRef.current.scale.x;
-        const newScale = currentScale + (targetScale - currentScale) * 0.1;
-        groupRef.current.scale.setScalar(newScale);
-      }
-      
-      // Hover lift effect
-      const targetY = hovered && !isSide ? position[1] + 0.2 : position[1];
-      const currentY = groupRef.current.position.y;
-      groupRef.current.position.y = currentY + (targetY - currentY) * 0.1;
+      // Simplificado: apenas aplica scale fixo
+      groupRef.current.scale.setScalar(scale);
+      groupRef.current.position.y = position[1];
     }
   });
 
@@ -100,7 +88,7 @@ const Card3D = ({ position, rotation, scale, card, isActive, onClick, isMoving, 
           width: isMobile ? "180px" : "220px",
           pointerEvents: "none",
           userSelect: "none",
-          opacity: isMoving ? 0 : isSide ? 0.6 : 1,
+          opacity: isSide ? 0.7 : 1,
           transition: "opacity 0.3s ease-out",
         }}
       >
@@ -170,19 +158,6 @@ const Card3D = ({ position, rotation, scale, card, isActive, onClick, isMoving, 
         </div>
       </Html>
 
-      {/* Legendary particles */}
-      {card.isLegendary && <GoldenParticles />}
-
-      {/* Floor reflection */}
-      <mesh position={[0, -4, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <planeGeometry args={[2.5, 3.5]} />
-        <meshBasicMaterial
-          color="#B8860B"
-          transparent
-          opacity={isActive ? 0.15 : 0.08}
-          blending={THREE.AdditiveBlending}
-        />
-      </mesh>
     </group>
   );
 };

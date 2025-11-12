@@ -1,4 +1,4 @@
-import { Wine, UtensilsCrossed, Cake } from "lucide-react";
+import { Wine, UtensilsCrossed } from "lucide-react";
 
 export const CAROUSEL_CARDS = [{
   id: 1,
@@ -77,21 +77,11 @@ export const MENU_CATEGORIES = [
   {
     title: "Drinks",
     icon: Wine,
-    description: "Coquetéis autorais e clássicos"
+    description: "Coquetéis autorais e clássicos reimaginados"
   },
   {
-    title: "Pratos",
+    title: "Comidas",
     icon: UtensilsCrossed,
-    description: "Gastronomia contemporânea"
-  },
-  {
-    title: "Sobremesas",
-    icon: Cake,
-    description: "Doces experiências"
-  },
-  {
-    title: "Vinhos",
-    icon: Wine,
-    description: "Carta premium selecionada"
+    description: "Gastronomia contemporânea e petiscos premium"
   }
 ];

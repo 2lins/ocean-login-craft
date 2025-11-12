@@ -2,13 +2,11 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChevronLeft, ChevronRight, MapPin, Phone, Mail, Clock, Facebook, Instagram, Twitter } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { NewsSection3D } from "@/components/news";
 import { FuturisticHeader } from "@/components/FuturisticHeader";
 import { ScrollIndicator } from "@/components/ScrollIndicator";
 import { MenuCategoryCard } from "@/components/MenuCategoryCard";
 import { LazyCanvas } from "@/components/LazyCanvas";
-import { LazySpline } from "@/components/LazySpline";
-import { CAROUSEL_CARDS, NEWS_ITEMS, MENU_CATEGORIES } from "@/constants/menuData";
+import { CAROUSEL_CARDS, MENU_CATEGORIES } from "@/constants/menuData";
 const Menu = () => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [carouselIndex, setCarouselIndex] = useState(0);
@@ -229,30 +227,6 @@ const Menu = () => {
         </div>
       </section>
 
-      {/* News Section with Lazy Loaded Spline Background */}
-      <section className="relative py-16 md:py-20 lg:py-24 bg-background overflow-hidden">
-        {/* Lazy Loaded Spline 3D Background */}
-        <LazySpline 
-          src='https://my.spline.design/whiskeyloadinganimation-zXpGMvScRZZV036Iet3lQpQr/'
-          className="absolute inset-0 z-0 opacity-40"
-        />
-        
-        {/* Simple dark overlay */}
-        <div className="absolute inset-0 bg-black/70 z-[1]" />
-        
-        <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-          <div className="text-center mb-12 md:mb-16">
-            <h2 className="font-cinzel text-4xl md:text-5xl lg:text-6xl font-bold text-primary mb-4">
-              ÚLTIMAS NOVIDADES
-            </h2>
-            <p className="font-cormorant text-xl md:text-2xl text-foreground/90 italic">
-              Fique por dentro dos eventos e promoções
-            </p>
-          </div>
-          
-          <NewsSection3D news={NEWS_ITEMS} />
-        </div>
-      </section>
 
       {/* Menu Preview Section */}
       <section className="relative py-16 md:py-20 lg:py-24 bg-gradient-to-b from-background to-card/20">
@@ -266,7 +240,7 @@ const Menu = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 max-w-4xl mx-auto">
             {MENU_CATEGORIES.map((category, index) => (
               <MenuCategoryCard 
                 key={index}

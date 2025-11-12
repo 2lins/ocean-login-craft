@@ -140,31 +140,145 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Sunset & Ranking Carousels */}
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Sunset Cocktail */}
-            <div className="bg-card/30 backdrop-blur-sm border border-primary/20 rounded-lg overflow-hidden">
-              <img src={sunsetCocktail} alt="Sunset Cocktail" className="w-full h-48 object-cover" />
-              <div className="p-6">
-                <h3 className="font-cinzel text-2xl text-primary mb-3">Sunset Edition</h3>
-                <p className="font-cormorant text-foreground/80 mb-4">
-                  Drinks inspirados no pôr do sol, com cores vibrantes e sabores tropicais que capturam a magia do entardecer.
+          {/* Missões do Navegador - Gamificação */}
+          <div className="w-full max-w-7xl mx-auto">
+            <h2 className="font-cinzel text-4xl font-bold text-center mb-8 text-primary">
+              Missões do Navegador
+            </h2>
+            
+            {/* Desktop Layout */}
+            <div className="hidden md:grid md:grid-cols-2 gap-6">
+              {/* Tarefa 1: Completar Registro */}
+              <div className="bg-card/30 backdrop-blur-sm border-2 border-primary/30 rounded-lg p-8 hover:border-primary/60 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-cinzel text-2xl text-primary mb-2">Completar Perfil</h3>
+                    <p className="font-cormorant text-foreground/80">
+                      Finalize seu cadastro e ganhe <span className="text-primary font-bold">10 pontos</span>
+                    </p>
+                  </div>
+                </div>
+                <div className="space-y-3 mb-6">
+                  <div className="flex items-center gap-2 text-sm">
+                    <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <span className="text-foreground/70">Nome completo</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10" />
+                    </svg>
+                    <span className="text-foreground/70">Número de telefone</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm">
+                    <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <circle cx="12" cy="12" r="10" />
+                    </svg>
+                    <span className="text-foreground/70">Data de nascimento</span>
+                  </div>
+                </div>
+                <Button className="w-full bg-primary hover:bg-primary/90 font-cinzel" onClick={() => navigate('/profile')}>
+                  Completar Agora
+                </Button>
+              </div>
+
+              {/* Tarefa 2: Compartilhar WhatsApp */}
+              <div className="bg-card/30 backdrop-blur-sm border-2 border-green-500/30 rounded-lg p-8 hover:border-green-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-green-500/20">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-16 h-16 rounded-full bg-green-500/20 flex items-center justify-center">
+                    <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-cinzel text-2xl text-green-500 mb-2">Compartilhar no WhatsApp</h3>
+                    <p className="font-cormorant text-foreground/80">
+                      Indique o Cais Nobre e ganhe <span className="text-green-500 font-bold">10 pontos</span>
+                    </p>
+                  </div>
+                </div>
+                <p className="text-sm text-foreground/60 mb-6 font-cormorant">
+                  Compartilhe nossa experiência com seus amigos e acumule pontos para recompensas exclusivas!
                 </p>
-                <Button variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground font-cinzel">
-                  Ver Coleção
+                <Button 
+                  className="w-full bg-green-500 hover:bg-green-600 text-white font-cinzel"
+                  onClick={() => {
+                    const text = encodeURIComponent("Descubra a experiência única do Cais Nobre! 🍸✨");
+                    const url = encodeURIComponent(window.location.origin);
+                    window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+                  }}
+                >
+                  <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+                  </svg>
+                  Compartilhar Agora
                 </Button>
               </div>
             </div>
 
-            {/* Ranking */}
-            <div className="bg-card/30 backdrop-blur-sm border border-primary/20 rounded-lg p-6 flex flex-col justify-center">
-              <h3 className="font-cinzel text-2xl text-primary mb-3">Ranking Exclusivo</h3>
-              <p className="font-cormorant text-foreground/80 mb-4">
-                Acompanhe os navegadores mais ativos e ganhe recompensas exclusivas. Cada visita, cada drink é um passo rumo ao topo.
-              </p>
-              <Button onClick={() => navigate("/ranking")} variant="outline" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground font-cinzel w-fit">
-                Saiba Mais
-              </Button>
+            {/* Mobile Layout com 3D Gamificado Simples */}
+            <div className="md:hidden w-full max-w-md mx-auto space-y-6">
+              {/* Tarefa 1 Mobile */}
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-primary/10 rounded-lg blur-xl group-hover:blur-2xl transition-all duration-300" />
+                <div className="relative bg-card/95 backdrop-blur-sm border-2 border-primary/40 rounded-lg p-6 transform hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-primary/30">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-cinzel text-lg text-primary mb-1">Completar Perfil</h3>
+                      <p className="font-cormorant text-sm text-foreground/80">
+                        Ganhe <span className="text-primary font-bold">10 pontos</span>
+                      </p>
+                    </div>
+                  </div>
+                  <Button className="w-full bg-primary hover:bg-primary/90 font-cinzel text-sm" onClick={() => navigate('/profile')}>
+                    Completar Agora
+                  </Button>
+                </div>
+              </div>
+
+              {/* Tarefa 2 Mobile */}
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-r from-green-500/30 to-green-500/10 rounded-lg blur-xl group-hover:blur-2xl transition-all duration-300" />
+                <div className="relative bg-card/95 backdrop-blur-sm border-2 border-green-500/40 rounded-lg p-6 transform hover:scale-105 transition-all duration-300 hover:shadow-2xl hover:shadow-green-500/30">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-12 h-12 rounded-full bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                      <svg className="w-6 h-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h3 className="font-cinzel text-lg text-green-500 mb-1">Compartilhar</h3>
+                      <p className="font-cormorant text-sm text-foreground/80">
+                        Ganhe <span className="text-green-500 font-bold">10 pontos</span>
+                      </p>
+                    </div>
+                  </div>
+                  <Button 
+                    className="w-full bg-green-500 hover:bg-green-600 text-white font-cinzel text-sm"
+                    onClick={() => {
+                      const text = encodeURIComponent("Descubra a experiência única do Cais Nobre! 🍸✨");
+                      const url = encodeURIComponent(window.location.origin);
+                      window.open(`https://wa.me/?text=${text}%20${url}`, '_blank');
+                    }}
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z" />
+                    </svg>
+                    Compartilhar
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
