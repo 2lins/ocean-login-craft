@@ -2,64 +2,22 @@ import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-
-interface Cocktail {
-  id: number;
-  name: string;
-  description: string;
-  ingredients: string[];
-  price: number;
-  alcoholPercentage: number;
-  story: string;
-  image: string;
-}
-
-const cocktails: Cocktail[] = [
-  {
-    id: 1,
-    name: "Mojito Cubano",
-    description: "Refrescante cocktail com rum branco, hortelã fresca e lima",
-    ingredients: ["Rum Branco Premium", "Hortelã Fresca", "Lima Espremida", "Açúcar Mascavo", "Água com Gás", "Gelo Picado"],
-    price: 12,
-    alcoholPercentage: 15,
-    story: "Nascido em Havana, o Mojito era o cocktail favorito de Ernest Hemingway. Nossa versão usa rum envelhecido e hortelã cultivada localmente.",
-    image: "/api/placeholder/400/400"
-  },
-  {
-    id: 2,
-    name: "Negroni Clássico",
-    description: "Bitter italiano com gin, Campari e vermute rosso",
-    ingredients: ["Gin London Dry", "Campari", "Vermute Rosso", "Casca de Laranja"],
-    price: 15,
-    alcoholPercentage: 25,
-    story: "Criado em 1919 pelo Conde Camillo Negroni em Florença. Um cocktail para paladares sofisticados.",
-    image: "/api/placeholder/400/400"
-  },
-  {
-    id: 3,
-    name: "Martini Dry",
-    description: "O cocktail mais elegante com gin premium e vermute seco",
-    ingredients: ["Gin Premium", "Vermute Seco", "Azeitona Verde", "Twist de Limão"],
-    price: 18,
-    alcoholPercentage: 30,
-    story: "O cocktail dos agentes secretos e executivos. Servido gelado em taça clássica com azeitona ou twist de limão.",
-    image: "/api/placeholder/400/400"
-  }
-];
+import { Cocktail } from '@/types/cocktails.types';
+import { cocktailsData } from '@/data/cocktails';
 
 export const CocktailHeroSession = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
 
-  const currentCocktail = cocktails[currentIndex];
+  const currentCocktail = cocktailsData[currentIndex];
 
   const nextCocktail = () => {
     if (isTransitioning) return;
     setIsTransitioning(true);
     setDirection('right');
     setTimeout(() => {
-      setCurrentIndex((prev) => (prev + 1) % cocktails.length);
+      setCurrentIndex((prev) => (prev + 1) % cocktailsData.length);
       setIsTransitioning(false);
     }, 300);
   };
@@ -69,7 +27,7 @@ export const CocktailHeroSession = () => {
     setIsTransitioning(true);
     setDirection('left');
     setTimeout(() => {
-      setCurrentIndex((prev) => (prev - 1 + cocktails.length) % cocktails.length);
+      setCurrentIndex((prev) => (prev - 1 + cocktailsData.length) % cocktailsData.length);
       setIsTransitioning(false);
     }, 300);
   };
@@ -206,7 +164,7 @@ export const CocktailHeroSession = () => {
                   key={index}
                   className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 text-center text-sm hover:bg-white/20 transition-all hover:scale-105"
                 >
-                  {ingredient}
+                  {ingredient.name}
                 </div>
               ))}
             </div>
@@ -231,7 +189,7 @@ export const CocktailHeroSession = () => {
       <div className="absolute bottom-8 right-8 flex flex-col items-end gap-4">
         {/* Dots */}
         <div className="flex gap-2">
-          {cocktails.map((_, index) => (
+          {cocktailsData.map((_, index) => (
             <button
               key={index}
               onClick={() => {
@@ -256,7 +214,7 @@ export const CocktailHeroSession = () => {
 
         {/* Counter */}
         <div className="text-sm text-gray-400 font-medium">
-          {currentIndex + 1} de {cocktails.length}
+          {currentIndex + 1} de {cocktailsData.length}
         </div>
       </div>
     </div>
