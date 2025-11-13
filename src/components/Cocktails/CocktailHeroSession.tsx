@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import logoCais from '@/assets/logo-cais-nobre-principal.png';
 import { cocktailsData } from '@/data/cocktails';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
@@ -24,6 +25,9 @@ export const CocktailHeroSession = () => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center px-8 py-16">
+      <div className="fixed top-4 left-0 right-0 flex justify-center z-20">
+        <img src={logoCais} alt="Cais Nobre" className="w-12 h-12 drop-shadow-[0_0_15px_rgba(242,228,200,0.4)]" />
+      </div>
       <div className="relative w-full max-w-4xl mx-auto">
         
         {/* Container do Cocktail */}

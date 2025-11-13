@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import Ranking from "./pages/Ranking";
 import HappyHours from "./pages/HappyHours";
 import CocktailsHero from "./pages/CocktailsHero";
+import CocktailsSelect from "./pages/CocktailsSelect";
 import NotFound from "./pages/NotFound";
 import { AppGuard } from "./components/app/AppGuard";
 import AppInicio from "./pages/app/AppInicio";
@@ -31,8 +32,11 @@ const App = () => <QueryClientProvider client={queryClient}>
           <Route path="/" element={<Index />} />
         <Route path="/home" element={<Home />} />
         <Route path="/menu" element={<Menu />} />
+        <Route path="/cocktails" element={<CocktailsSelect />} />
           
           <Route path="/cocktails-hero" element={<CocktailsHero />} />
+          <Route path="/cocktails-mensais" element={<Navigate to="/cocktails-hero" replace />} />
+          <Route path="/cocktails-gastronomicos" element={<Navigate to="/cocktails-hero" replace />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/ranking" element={<Ranking />} />
           

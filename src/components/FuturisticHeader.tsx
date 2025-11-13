@@ -15,14 +15,17 @@ export const FuturisticHeader = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
   const navLinks = [{
-    name: "Home",
-    path: "/home"
+    name: "Eventos",
+    path: "/happy-hours"
   }, {
-    name: "Cardápio",
-    path: "/menu"
+    name: "Cocktails",
+    path: "/cocktails"
   }, {
-    name: "Ranking",
+    name: "Tesouro",
     path: "/ranking"
+  }, {
+    name: "Experiência",
+    path: "/menu"
   }];
   return <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "bg-background/80 backdrop-blur-md border-b border-primary/20" : "bg-transparent"}`}>
       <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
@@ -38,8 +41,19 @@ export const FuturisticHeader = () => {
             </span>
           </div>
 
-          {/* Right spacer */}
-          <div></div>
+          <div className="hidden md:flex justify-end">
+            <nav className="flex items-center gap-6">
+              {navLinks.map(link => (
+                <button
+                  key={link.name}
+                  onClick={() => navigate(link.path)}
+                  className="text-foreground/80 hover:text-primary transition-colors duration-300 font-cinzel text-sm tracking-wide"
+                >
+                  {link.name}
+                </button>
+              ))}
+            </nav>
+          </div>
         </div>
       </div>
 

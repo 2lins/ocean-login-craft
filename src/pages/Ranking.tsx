@@ -57,18 +57,6 @@ const Ranking = () => {
     position: 12
   };
 
-  const topUsers: RankUser[] = [
-    { id: 1, name: "Capitão Silva", level: "Almirante", points: 8540, badges: 15, position: 1 },
-    { id: 2, name: "Ana Costa", level: "Almirante", points: 7230, badges: 14, position: 2 },
-    { id: 3, name: "Pedro Santos", level: "Comendador", points: 4850, badges: 12, position: 3 },
-    { id: 4, name: "Maria Oliveira", level: "Comendador", points: 3920, badges: 10, position: 4 },
-    { id: 5, name: "João Ferreira", level: "Comendador", points: 3450, badges: 9, position: 5 },
-    { id: 6, name: "Laura Mendes", level: "Comendador", points: 2890, badges: 8, position: 6 },
-    { id: 7, name: "Carlos Rocha", level: "Comendador", points: 2340, badges: 7, position: 7 },
-    { id: 8, name: "Sofia Lima", level: "Comendador", points: 1950, badges: 6, position: 8 },
-    { id: 9, name: "Rafael Souza", level: "Comendador", points: 1520, badges: 5, position: 9 },
-    { id: 10, name: "Beatriz Alves", level: "Comendador", points: 1180, badges: 4, position: 10 }
-  ];
 
   useEffect(() => {
     setIsLoaded(true);
@@ -78,12 +66,6 @@ const Ranking = () => {
   const currentLevelConfig = getLevelConfig(currentUser.level);
   const CurrentLevelIcon = currentLevelConfig.icon;
 
-  const getPositionMedal = (position: number) => {
-    if (position === 1) return <Trophy className="w-6 h-6 text-yellow-400" />;
-    if (position === 2) return <Medal className="w-6 h-6 text-gray-400" />;
-    if (position === 3) return <Medal className="w-6 h-6 text-amber-700" />;
-    return <span className="text-muted-foreground font-cinzel font-bold">{position}º</span>;
-  };
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden bg-background pb-8">
@@ -191,60 +173,6 @@ const Ranking = () => {
           </div>
         </div>
 
-        {/* Ranking Table */}
-        <div className={`transition-all duration-1000 delay-400 ${isLoaded ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
-          <h3 className="font-cinzel text-lg font-bold text-primary mb-3 text-center">Top Navegadores</h3>
-          <Card className="border border-primary/20 bg-card/50 backdrop-blur-sm overflow-hidden">
-            <div className="divide-y divide-primary/10">
-              {topUsers.map((user, index) => {
-                const userLevelConfig = getLevelConfig(user.level);
-                const UserLevelIcon = userLevelConfig.icon;
-                
-                return (
-                  <div
-                    key={user.id}
-                    className={`p-4 transition-all duration-300 hover:bg-primary/5 ${
-                      index < 3 ? "bg-primary/5" : ""
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-4 flex-1 min-w-0">
-                        <div className="w-10 flex items-center justify-center">
-                          {getPositionMedal(user.position)}
-                        </div>
-                        
-                        <Avatar className={`w-12 h-12 border ${index < 3 ? "border-primary" : "border-primary/30"}`}>
-                          <AvatarFallback className={`${userLevelConfig.bgColor} ${userLevelConfig.color} font-cinzel`}>
-                            {user.name.charAt(0)}
-                          </AvatarFallback>
-                        </Avatar>
-                        
-                        <div className="flex-1 min-w-0">
-                          <div className="font-cormorant text-lg font-semibold text-foreground truncate">
-                            {user.name}
-                          </div>
-                          <Badge variant="outline" className={`text-xs ${userLevelConfig.bgColor} ${userLevelConfig.color} border-${userLevelConfig.borderColor}`}>
-                            <UserLevelIcon className="w-3 h-3 mr-1" />
-                            {user.level}
-                          </Badge>
-                        </div>
-                      </div>
-
-                      <div className="text-right flex-shrink-0">
-                        <div className="text-xl font-cinzel font-bold text-primary">
-                          {user.points.toLocaleString()}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {user.badges} emblemas
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </Card>
-        </div>
 
         {/* Decorative quote */}
         <div className={`mt-8 text-center transition-all duration-1000 delay-500 ${isLoaded ? "opacity-100" : "opacity-0"}`}>
