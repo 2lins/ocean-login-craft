@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Crown, Trophy, Medal, ArrowLeft, Star, Anchor } from "lucide-react";
+import { Crown, ArrowLeft, Anchor, MapPin, Navigation, Flag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -10,35 +10,50 @@ import logoCais from "@/assets/logo-cais-nobre-principal.png";
 interface RankUser {
   id: number;
   name: string;
-  level: "Navegador" | "Comendador" | "Almirante";
   points: number;
   badges: number;
   position: number;
 }
 
 const levelConfig = {
-  Navegador: {
-    color: "text-amber-600",
-    bgColor: "bg-amber-600/10",
-    borderColor: "border-amber-600/30",
+  Grumete: {
+    color: "text-amber-500",
+    bgColor: "bg-amber-500/10",
+    borderColor: "border-amber-500/30",
     icon: Anchor,
     minPoints: 0,
-    maxPoints: 999
+    maxPoints: 199
   },
-  Comendador: {
-    color: "text-primary",
-    bgColor: "bg-primary/10",
-    borderColor: "border-primary/30",
-    icon: Medal,
-    minPoints: 1000,
-    maxPoints: 4999
+  Marinheiro: {
+    color: "text-amber-500",
+    bgColor: "bg-amber-500/10",
+    borderColor: "border-amber-500/30",
+    icon: MapPin,
+    minPoints: 200,
+    maxPoints: 399
+  },
+  Contramestre: {
+    color: "text-amber-500",
+    bgColor: "bg-amber-500/10",
+    borderColor: "border-amber-500/30",
+    icon: Navigation,
+    minPoints: 400,
+    maxPoints: 699
+  },
+  Capitão: {
+    color: "text-amber-500",
+    bgColor: "bg-amber-500/10",
+    borderColor: "border-amber-500/30",
+    icon: Flag,
+    minPoints: 700,
+    maxPoints: 1199
   },
   Almirante: {
-    color: "text-yellow-400",
-    bgColor: "bg-yellow-400/10",
-    borderColor: "border-yellow-400/30",
+    color: "text-amber-500",
+    bgColor: "bg-amber-500/10",
+    borderColor: "border-amber-500/30",
     icon: Crown,
-    minPoints: 5000,
+    minPoints: 1200,
     maxPoints: Infinity
   }
 };
@@ -51,7 +66,6 @@ const Ranking = () => {
   const currentUser: RankUser = {
     id: 0,
     name: "Você",
-    level: "Navegador",
     points: 450,
     badges: 3,
     position: 12
@@ -62,8 +76,17 @@ const Ranking = () => {
     setIsLoaded(true);
   }, []);
 
-  const getLevelConfig = (level: RankUser["level"]) => levelConfig[level];
-  const currentLevelConfig = getLevelConfig(currentUser.level);
+  const levelsOrder = ["Grumete", "Marinheiro", "Contramestre", "Capitão", "Almirante"] as const;
+  type LevelKey = typeof levelsOrder[number];
+  const getVariantFromPoints = (p: number): LevelKey => {
+    if (p <= levelConfig.Grumete.maxPoints) return "Grumete";
+    if (p <= levelConfig.Marinheiro.maxPoints) return "Marinheiro";
+    if (p <= levelConfig.Contramestre.maxPoints) return "Contramestre";
+    if (p <= levelConfig.Capitão.maxPoints) return "Capitão";
+    return "Almirante";
+  };
+  const currentVariant: LevelKey = getVariantFromPoints(currentUser.points);
+  const currentLevelConfig = levelConfig[currentVariant];
   const CurrentLevelIcon = currentLevelConfig.icon;
 
 
@@ -95,11 +118,6 @@ const Ranking = () => {
 
           <div className="flex flex-col items-center flex-1">
             <img src={logoCais} alt="Logo Cais Nobre" className="w-16 h-16 drop-shadow-[0_0_20px_rgba(239,169,74,0.3)]" />
-            <h1 className="mt-2 font-cinzel text-xl md:text-2xl font-bold text-primary tracking-[0.3em]" style={{
-              textShadow: "0 0 15px rgba(239, 169, 74, 0.4)"
-            }}>
-              ORDEM
-            </h1>
           </div>
 
           <div className="w-10" /> {/* Spacer for balance */}
@@ -119,7 +137,7 @@ const Ranking = () => {
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <h2 className="font-cinzel text-2xl font-bold text-foreground mb-1">{currentUser.name}</h2>
+                  <h2 className="font-cinzel text-2xl font-bold text-foreground mb-1">{currentVariant} {currentUser.name}</h2>
                   <Badge className={`${currentLevelConfig.bgColor} ${currentLevelConfig.color} border ${currentLevelConfig.borderColor}`}>
                     <CurrentLevelIcon className="w-4 h-4 mr-1" />
                     {currentUser.level}
@@ -132,20 +150,21 @@ const Ranking = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-primary/20">
-              <div>
-                <div className="flex items-center gap-2 text-primary">
-                  <Star className="w-5 h-5" />
-                  <span className="text-2xl font-cinzel font-bold">{currentUser.points}</span>
-                </div>
-                <div className="text-sm text-muted-foreground">Pontos</div>
-              </div>
-              <div>
-                <div className="flex items-center gap-2 text-primary">
-                  <Trophy className="w-5 h-5" />
-                  <span className="text-2xl font-cinzel font-bold">{currentUser.badges}</span>
-                </div>
-                <div className="text-sm text-muted-foreground">Emblemas</div>
+            <div className="pt-6 border-t border-primary/20">
+              <div className="relative flex items-center justify-between">
+                <div className="absolute left-8 right-8 top-1/2 h-px bg-amber-500/30" />
+                {levelsOrder.map((lvl) => {
+                  const Icon = levelConfig[lvl].icon;
+                  const isCurrent = lvl === currentVariant;
+                  return (
+                    <div key={lvl} className="relative flex flex-col items-center text-center">
+                      <div className={`flex items-center justify-center w-12 h-12 rounded-full border ${isCurrent ? 'border-amber-400 bg-amber-400/20' : 'border-amber-500/30 bg-amber-500/10'} shadow`}>
+                        <Icon className={`${isCurrent ? 'text-amber-300' : 'text-amber-500'} w-6 h-6`} />
+                      </div>
+                      <span className="mt-2 font-cinzel text-sm text-amber-400">{lvl}</span>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </Card>

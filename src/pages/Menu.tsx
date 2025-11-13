@@ -364,7 +364,7 @@ const Menu = () => {
               <ul className="space-y-2 font-cormorant">
                 <li>
                   <a href="#" className="text-foreground/70 hover:text-primary transition-colors duration-300">
-                    Home
+                    Início
                   </a>
                 </li>
                 <li>

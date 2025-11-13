@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
-import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import Profile from "./pages/Profile";
 import Ranking from "./pages/Ranking";
@@ -30,7 +29,6 @@ const App = () => <QueryClientProvider client={queryClient}>
         <Routes>
           {/* Public routes */}
           <Route path="/" element={<Index />} />
-        <Route path="/home" element={<Home />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/cocktails" element={<CocktailsSelect />} />
           
@@ -51,11 +49,7 @@ const App = () => <QueryClientProvider client={queryClient}>
           <Route path="/app/scan" element={<AppGuard><AppScan /></AppGuard>} />
           <Route path="/happy-hours" element={<HappyHours />} />
           
-          {/* Legacy redirects from /login/* to /app/* for compatibility */}
-          <Route path="/login/pedidos" element={<Navigate to="/app/pedidos" replace />} />
-          <Route path="/login/checkout" element={<Navigate to="/app/checkout" replace />} />
-          <Route path="/login/status/:orderId" element={<Navigate to="/app/status/:orderId" replace />} />
-          <Route path="/login/cardapio" element={<Navigate to="/app/cardapio" replace />} />
+          
           
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
